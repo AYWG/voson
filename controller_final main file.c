@@ -654,12 +654,9 @@ void main (void)
 	
 	
 	// Vibrate motor to give feedback
-	P2_0 = 1;
+	NOTIF = 1;
 	waitms(20);
-	P2_0 = 0;
-	
-	// Turn on bluetooth
-	P2_6 = 1;
+	NOTIF = 0;
 	
 	// Wake the board
 	
@@ -677,7 +674,7 @@ void main (void)
 	{
 		if (DEADMAN == 0){ // if the deadmans trigger is pressed down then send data
 		//testi2c();
-		printf("%i", btn_debug);
+			printf("%i", btn_debug);
 		}
 		
 		if (BOOT == 0){ btnpress(); } 					// Core code for home button functionality

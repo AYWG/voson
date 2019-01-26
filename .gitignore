@@ -1,2 +1,8 @@
 Examples/
-*.png
+*.bat
+*.asm
+*.hex
+*.lkr
+*.lst
+*.map
+*.txt
