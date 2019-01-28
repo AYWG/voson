@@ -242,6 +242,7 @@ void timer4_ISR (void) interrupt INTERRUPT_TIMER4 // Interrupt Service Routine f
 		btn_debug = 3;
 		btn_state = 0;
 		stop_timer4 ();
+		printf("Double click!\n");
 	}
 
 }
@@ -277,13 +278,14 @@ void main (void)
 	// Display Init sequence
 	init_oled();
 	clear_oled();
-	draw_oled();
-	P1_6 = 0; // 
+	draw_oled(0, 0, 64, 124, settings);
+
+	CHARGE_EN = 0;
 	
 	while(1)
 	{
 		if (DEADMAN == 0){ // if the deadmans trigger is pressed down then send data
-		//testi2c();
+			clear_oled();
 			printf("%i", btn_debug);
 		}
 		
