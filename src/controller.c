@@ -6,6 +6,8 @@
 #include "oled.c"
 #include "i2c.c"
 
+volatile unsigned int menu_state = 0;
+
 
 // address for FUXB = 0x46 and 0x45
 // address for current = 0xAA 0xAB
@@ -243,9 +245,12 @@ void timer4_ISR (void) interrupt INTERRUPT_TIMER4 // Interrupt Service Routine f
 		btn_state = 0;
 		stop_timer4 ();
 		printf("Double click!\n");
+		menu_state = menu_state == 2 ? 0 : menu_state + 1;
+		update_menu(menu_state);
 	}
 
 }
+
 
 /////////////////////////////////
 // Core code for main function //
@@ -277,8 +282,7 @@ void main (void)
 	
 	// Display Init sequence
 	init_oled();
-	clear_oled();
-	draw_oled(0, 0, 64, 124, settings);
+	update_menu(menu_state);
 
 	CHARGE_EN = 0;
 	
@@ -288,7 +292,7 @@ void main (void)
 			clear_oled();
 			printf("%i", btn_debug);
 		}
-		
+
 		if (BOOT == 0){ btnpress(); } 					// Core code for home button functionality
 		else { if (btn_state != 2){ btn_press = 0; } }	// keep these two lines together. 
 		
