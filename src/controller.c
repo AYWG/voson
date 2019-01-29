@@ -17,7 +17,7 @@ volatile unsigned int btn_type = 0;
 volatile unsigned int btn_press = 0;
 volatile unsigned int btn_debug = 0;
 
-void SendByteSPI ()
+void SendByteSPI()
 {
 	SFRPAGE = 0x00;
 	OLED_SELECT = 0;
@@ -29,8 +29,7 @@ void SendByteSPI ()
 	return;
 }
 
-
-void senddata (char c) 
+void senddata(char c) 
 {
     SFRPAGE = 0x20;
 	if (c == '\n') 
@@ -45,7 +44,7 @@ void senddata (char c)
 	SFRPAGE = 0x00;
 }
 
-char receivedata (void)
+char receivedata(void)
 {
 	char c;
     SFRPAGE = 0x20;
@@ -57,12 +56,11 @@ char receivedata (void)
 	return (c);
 }
 
-void low_power_sleep (){
+void low_power_sleep(){
 
 //PCON1 = 0b1000_0000;
 
 }
-
 
 /////////////////////////////////////////////
 // Core code for home button functionality //
@@ -77,13 +75,13 @@ void btnpress() { // need to re-map pins to enable interrupts
 	}
 }
 
-void stop_timer4 () {
+void stop_timer4() {
 	SFRPAGE = 0x10;
 	TMR4CN0 = 0b0000_0011; //Stop the timer
 	SFRPAGE = 0x00;
 }
 
-void timer4_ISR (void) interrupt INTERRUPT_TIMER4 // Interrupt Service Routine for timer 4
+void timer4_ISR(void) interrupt INTERRUPT_TIMER4 // Interrupt Service Routine for timer 4
 { 
 	SFRPAGE = 0x10;
 	TMR4CN0 = 0b0000_0111; //Reset the interrupt
@@ -135,7 +133,7 @@ void timer4_ISR (void) interrupt INTERRUPT_TIMER4 // Interrupt Service Routine f
 // Core code for main function //
 /////////////////////////////////
 
-void main (void)
+void main(void)
 {
 	// Clear all pin states and reset
 	STATUS1 = 1;
@@ -158,18 +156,19 @@ void main (void)
 	// Turn on magnetoresistor sensor
 	ENABLE = 0;
 
-	
 	// Display Init sequence
-	init_oled();
-	update_menu(menu_state);
+	oled_init();
+	oled_clear();
+	// update_menu(menu_state);
 
 	CHARGE_EN = 0;
 	
 	while(1)
 	{
 		if (DEADMAN == 0){ // if the deadmans trigger is pressed down then send data
-			clear_oled();
-			printf("%i", btn_debug);
+			oled_clear();
+			printf("%u\n", sizeof Open_Sans_Regular_45);
+			// printf("%i", btn_debug);
 		}
 
 		if (BOOT == 0){ btnpress(); } 					// Core code for home button functionality
