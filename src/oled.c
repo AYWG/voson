@@ -420,15 +420,9 @@ void update_menu(volatile int menu)
     {
     case 0:
         draw_oled(0, 0, 64, 124, main_menu);
-        printf("a\n");
         break;
     case 1:
         draw_oled(0, 0, 64, 124, settings_menu);
-        printf("b\n");
         break;
-    case 2:
-        printf("c\n");
-        break;
-
     }
 }
