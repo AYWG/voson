@@ -158,7 +158,10 @@ void main(void)
 
 	// Display Init sequence
 	oled_init();
-	oled_clear();
+	oled_draw(ORIGIN_X, ORIGIN_Y, 64, 128, main_menu);
+	// meme_draw();
+	// oled_draw(0, 0, 30, 30, number);
+	// meme_draw();
 	// update_menu(menu_state);
 
 	CHARGE_EN = 0;
@@ -167,7 +170,6 @@ void main(void)
 	{
 		if (DEADMAN == 0){ // if the deadmans trigger is pressed down then send data
 			oled_clear();
-			printf("%u\n", sizeof Open_Sans_Regular_45);
 			// printf("%i", btn_debug);
 		}
 
