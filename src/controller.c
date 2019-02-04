@@ -158,10 +158,9 @@ void main(void)
 
 	// Display Init sequence
 	oled_init();
-	oled_draw(ORIGIN_X, ORIGIN_Y, 64, 128, main_menu);
+	oled_draw(ORIGIN_X + 32, ORIGIN_Y + 64, 64, 128, main_menu);
 	// meme_draw();
 	// oled_draw(0, 0, 30, 30, number);
-	// meme_draw();
 	// update_menu(menu_state);
 
 	CHARGE_EN = 0;

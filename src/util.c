@@ -1,3 +1,5 @@
+#define min(x, y) (((x) < (y)) ? (x) : (y))
+
 // Uses Timer3 to delay <us> micro-seconds.
 void Timer3us(unsigned char us)
 {
