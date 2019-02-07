@@ -141,16 +141,16 @@ const unsigned char main_menu[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 
-unsigned char **oled_display;
+static unsigned char **oled_display;
 
 static void oled_display_init()
 {
     int i, j;
-    oled_display = malloc(DISPLAY_HEIGHT * sizeof(unsigned char *));
+    oled_display = (unsigned char **) malloc(DISPLAY_HEIGHT * sizeof(unsigned char *));
     for (i = 0; i < DISPLAY_HEIGHT; i++) {
-        oled_display[i] = malloc(DISPLAY_WIDTH * sizeof(unsigned char));
+        oled_display[i] = (unsigned char *) malloc(DISPLAY_WIDTH * sizeof(unsigned char));
         for (j = 0; j < DISPLAY_WIDTH; j++) {
-            oled_display[i][j] = 0x00;
+            array_at(oled_display, i, j) = 0x00;
         }
     }
 }
@@ -335,34 +335,33 @@ void oled_draw_pixel(int pixel_x, int pixel_y, int is_white)
     unsigned char mask = pixel_y % 2 == 0 ? 0xF0 : 0x0F;
     unsigned char other_mask = ~mask;
     unsigned char pixel_val = is_white ? 0xFF : 0x00;
-    unsigned char current_screen_pixels = oled_display[display_y][display_x];
+    unsigned char current_screen_pixels = array_at(oled_display, display_y, display_x);
     oled_set_cursor(display_x, display_y);
     oled_enable_draw();
 
     if (is_white) {
         if (current_screen_pixels == 0x00) {
-            oled_display[display_y][display_x] = pixel_val & mask;
+            array_at(oled_display, display_y, display_x) = pixel_val & mask;
             oled_write(pixel_val & mask);
         }
         else if ( (current_screen_pixels == 0x0F && mask == 0xF0) ||
                   (current_screen_pixels == 0xF0 && mask == 0x0F)   ) {
-            oled_display[display_y][display_x] = pixel_val;
+            array_at(oled_display, display_y, display_x) = pixel_val;
             oled_write(pixel_val);
         }
     }
 
     else {
         if (current_screen_pixels == 0xFF) {
-            oled_display[display_y][display_x] = other_mask & 0xFF;
+            array_at(oled_display, display_y, display_x) = other_mask & 0xFF;
             oled_write(other_mask & 0xFF);
         }
         else if (current_screen_pixels == mask)
         {
-            oled_display[display_y][display_x] = pixel_val;
+            array_at(oled_display, display_y, display_x) = pixel_val;
             oled_write(pixel_val);
         }
     }
-
 }
 
 void update_menu(volatile int menu)
