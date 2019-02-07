@@ -1,5 +1,5 @@
 #define min(x, y) (((x) < (y)) ? (x) : (y))
-#define array_at(arr, row, col) (*(*((arr) + (row)) + (col)))
+#define byte_at(disp, disp_row, disp_col) (*((disp) + (disp_row) * (DISPLAY_WIDTH) + (disp_col)))
 
 // Uses Timer3 to delay <us> micro-seconds.
 void Timer3us(unsigned char us)

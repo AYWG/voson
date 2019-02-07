@@ -17,6 +17,8 @@ volatile unsigned int btn_type = 0;
 volatile unsigned int btn_press = 0;
 volatile unsigned int btn_debug = 0;
 
+static unsigned char *foo;
+
 void SendByteSPI()
 {
 	SFRPAGE = 0x00;
@@ -161,12 +163,11 @@ void main(void)
 
 	// Display Init sequence
 	oled_init();
-	for (x = 0; x < 64; x++) {
-		for (y = 0; y < 256; y++) {
-			oled_draw_pixel(x, y, 1);
-		}
-	}
+	
+	
 
+	// waitms(2000);
+	oled_clear();
 
 	CHARGE_EN = 0;
 
@@ -176,11 +177,12 @@ void main(void)
 
 		if (DEADMAN == 0){ // if the deadmans trigger is pressed down then send data
 			oled_clear();
-			// for (i = 0; i < 16; i++) {
-			// 	for(j = 0; j < 8; j++) {
-			// 		printf("%c\n", foo[i][j]);
-			// 	}
-			// }
+
+			for (x = 0; x < 64; x++) {
+				for (y = 0; y < 256; y++) {
+					oled_draw_pixel(x, y, 1);
+				}
+			}
 		}
 
 		if (BOOT == 0){ btnpress(); } 					// Core code for home button functionality
