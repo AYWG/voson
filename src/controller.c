@@ -17,6 +17,8 @@ volatile unsigned int btn_type = 0;
 volatile unsigned int btn_press = 0;
 volatile unsigned int btn_debug = 0;
 
+char *foo;
+
 void SendByteSPI()
 {
 	SFRPAGE = 0x00;
@@ -135,6 +137,9 @@ void timer4_ISR(void) interrupt INTERRUPT_TIMER4 // Interrupt Service Routine fo
 
 void main(void)
 {
+	int i;
+	int y;
+	int x;
 	// Clear all pin states and reset
 	STATUS1 = 1;
 	NOTIF = 0;
@@ -158,18 +163,36 @@ void main(void)
 
 	// Display Init sequence
 	oled_init();
-	oled_draw(ORIGIN_X + 32, ORIGIN_Y + 64, 64, 128, main_menu);
+	// oled_draw(ORIGIN_X, ORIGIN_Y, 25, 7, switch_on);
+	// for (x = 0; x < 64; x++) {
+	// 	for (y = 0; y < 256; y++) {
+	// 		oled_draw_pixel(x, y, 1);
+	// 	}
+	// }
+	oled_draw_pixel(0, 0, 1);
+	oled_draw_pixel(0, 1, 1);
+	oled_set_cursor(1, 0);
+	oled_enable_draw();
+	oled_write(0xFF);
+
 	// meme_draw();
 	// oled_draw(0, 0, 30, 30, number);
 	// update_menu(menu_state);
 
 	CHARGE_EN = 0;
+
+	foo = malloc(sizeof(char) * 256);
+
+	for (i = 0; i < 256; i++) {
+		foo[i] = 'a';
+	}
 	
 	while(1)
 	{
+
 		if (DEADMAN == 0){ // if the deadmans trigger is pressed down then send data
 			oled_clear();
-			// printf("%i", btn_debug);
+			printf("%c", foo[255]);
 		}
 
 		if (BOOT == 0){ btnpress(); } 					// Core code for home button functionality

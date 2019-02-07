@@ -18,8 +18,8 @@
 #define DEADMAN P2_1
 #define BOOT P2_2
 #define LOWBAT P2_5
-#define BLE_PWR P2_6
 #define DISPLAY_LED1 P3_2
+#define BLE_PWR P2_6
 #define STATUS1 P3_3
 #define OLED_SELECT P0_3
 #define OLED_A0 P3_0
