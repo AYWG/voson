@@ -26,7 +26,7 @@ void SendByteSPI()
 	SPI0DAT = 0xA5;
 	while(!SPIF);
 	SPIF = 0;
-	Timer3us(5);
+	Timer3us(5); 
 	OLED_SELECT = 1;
 	return;
 }
@@ -163,8 +163,15 @@ void main(void)
 
 	// Display Init sequence
 	oled_init();
-	
-	
+
+	// foo = (unsigned char *) malloc(32 * 64 * sizeof(unsigned char *));
+	// for (i = 0; i < 32; i++)
+	// {
+	// 	for (j = 0; j < 64; j++)
+	// 	{
+	// 		byte_at(foo, i, j) = 0x00;
+	// 	}
+	// }
 
 	// waitms(2000);
 	oled_clear();
@@ -178,8 +185,9 @@ void main(void)
 		if (DEADMAN == 0){ // if the deadmans trigger is pressed down then send data
 			oled_clear();
 
-			for (x = 0; x < 64; x++) {
-				for (y = 0; y < 256; y++) {
+			for (y = 0; y < 256; y++) {
+				for (x = 0; x < 64; x++) {
+					if (y % 2 == 0)
 					oled_draw_pixel(x, y, 1);
 				}
 			}

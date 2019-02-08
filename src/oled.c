@@ -141,13 +141,13 @@ const unsigned char main_menu[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 
-static unsigned char *oled_display;
+unsigned char *oled_display;
 
 static void oled_display_init()
 {
     int i, j;
-    oled_display = (unsigned char *) malloc(DISPLAY_HEIGHT * DISPLAY_WIDTH * sizeof(unsigned char *));
-    for (i = 0; i < DISPLAY_HEIGHT; i++) {
+    oled_display = (unsigned char *) malloc(DISPLAY_HEIGHT / 4 * DISPLAY_WIDTH * sizeof(unsigned char *));
+    for (i = 0; i < DISPLAY_HEIGHT / 4; i++) {
         for (j = 0; j < DISPLAY_WIDTH; j++) {
             byte_at(oled_display, i, j) = 0x00;
         }
@@ -231,20 +231,6 @@ void oled_set_cursor(unsigned int x, unsigned int y)
     oled_write(0x010 | (y >> 4));
 }
 
-void oled_clear()
-{
-    unsigned int x, y;
-    for (y = 0; y < DISPLAY_HEIGHT; y++)
-    {
-        for (x = 0; x < DISPLAY_WIDTH; x++)
-        {
-            oled_set_cursor(x, y);
-            oled_enable_draw();
-            oled_write(0x00);
-        }
-    }
-}
-
 void oled_fill()
 {
     unsigned int x, y;
@@ -290,8 +276,6 @@ void oled_draw(int start_x, int start_y, int size_x, int size_y, char *image)
                 int displ_index = min((x - start_x) + ((y - start_y) * 16), size_x * size_y * 2 / 8 - 1);
                 int foo = image[displ_index] & (1 << sub_c);
                 int bar = image[displ_index] & (1 << (sub_c + 1));
-                waitms(10);
-                printf("ind: %d\n", displ_index);
 
                 if (foo >> sub_c == 1 && bar >> (sub_c + 1) == 1)
                     oled_write(0xFF);
@@ -318,39 +302,61 @@ void oled_draw2(char *image, int image_len)
 
 }
 
-void oled_draw_pixel(int pixel_x, int pixel_y, int is_white)
+void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, unsigned int is_white)
 {
-    int display_x = pixel_x;
-    int display_y = pixel_y / 2;
+    unsigned int display_x = pixel_x;
+    unsigned int display_y = pixel_y / 8;
 
-    unsigned char mask = pixel_y % 2 == 0 ? 0xF0 : 0x0F;
-    unsigned char other_mask = ~mask;
-    unsigned char pixel_val = is_white ? 0xFF : 0x00;
-    unsigned char current_screen_pixels = byte_at(oled_display, display_y, display_x);
-    oled_set_cursor(display_x, display_y);
+    unsigned int cursor_x = pixel_x;
+    unsigned int cursor_y = pixel_y / 2;
+
+    unsigned char mask = 0x80 >> (pixel_y % 8);
+    unsigned char inv_mask = ~mask;
+
+    unsigned char pixel_pair_mask, pixel_pair;
+
+    oled_set_cursor(cursor_x, cursor_y);
     oled_enable_draw();
 
+    // Update the stored display
     if (is_white) {
-        if (current_screen_pixels == 0x00) {
-            byte_at(oled_display, display_y, display_x) = pixel_val & mask;
-            oled_write(pixel_val & mask);
-        }
-        else if ( (current_screen_pixels == 0x0F && mask == 0xF0) ||
-                  (current_screen_pixels == 0xF0 && mask == 0x0F)   ) {
-            byte_at(oled_display, display_y, display_x) = pixel_val;
-            oled_write(pixel_val);
-        }
+        byte_at(oled_display, display_y, display_x) |= mask;
+    } else {
+        byte_at(oled_display, display_y, display_x) &= inv_mask;
     }
 
+    // Write to the visible screen
+    // We have to write two pixels at a time, so extract the two pixels that will be affected.
+    pixel_pair_mask = 0xC0 >> ( (pixel_y % 8) / 2 * 2);
+    pixel_pair = byte_at(oled_display, display_y, display_x) & pixel_pair_mask;
+
+    // Right shift to get the actual value of the pixel pair
+    pixel_pair >>= (6 - ((pixel_y % 8) / 2 * 2));
+    if (pixel_pair == 0) {
+        oled_write(0x00);
+    }
+    else if (pixel_pair == 1) {
+        oled_write(0x0F);
+    }
+    else if (pixel_pair == 2) {
+        oled_write(0xF0);
+    }
+    else if (pixel_pair == 3) {
+        oled_write(0xFF);
+    }
     else {
-        if (current_screen_pixels == 0xFF) {
-            byte_at(oled_display, display_y, display_x) = other_mask & 0xFF;
-            oled_write(other_mask & 0xFF);
-        }
-        else if (current_screen_pixels == mask)
+        printf("this should never happen\n");
+    }
+}
+
+void oled_clear()
+{
+    unsigned int x, y;
+    for (y = 0; y < 256; y++)
+    {
+        for (x = 0; x < 64; x++)
         {
-            byte_at(oled_display, display_y, display_x) = pixel_val;
-            oled_write(pixel_val);
+            oled_draw_pixel(x, y, 0);
         }
     }
 }
