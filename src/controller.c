@@ -188,7 +188,7 @@ void main(void)
 			// for (i = 0; i < 2000; i++) {
 			// 	printf("%d: 0x%02X\n",i, foo[i]);
 			// }
-			oled_draw2(main_menu, 2048);
+			oled_draw2(eco_bar, 128, 0, 16);
 			// oled_draw2(main_menu + 256, 32);
 			// for (y = 0; y < 8; y++) {
 			// 	for (x = 0; x < 64; x++) {

@@ -341,13 +341,19 @@ void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, unsigned int is
     }
 }
 
-void oled_draw2(unsigned char *image, int image_len)
+/**
+ * image     : an array of bytes representing the image
+ * image_len : length of image
+ * start_x   : x coordinate of oled_display to draw at (0-63)
+ * start_y   : y coordinate of oled_display to draw at (0-31)
+ */
+void oled_draw2(unsigned char *image, int image_len, int start_x, int start_y)
 {
     unsigned char mask = 0x80;
     unsigned char pixel;
     unsigned char byte;
-    int page = 0;
-    int x = 0;
+    int page = start_y;
+    int x = start_x;
     int y = 7;
     int i, j;
     int is_white;
@@ -368,9 +374,9 @@ void oled_draw2(unsigned char *image, int image_len)
             {
                 y = 7;
                 x++;
-                if (x >= 64)
+                if (x >= DISPLAY_WIDTH)
                 {
-                    x = 0;
+                    x = start_x;
                     page++;
                 }
             }
