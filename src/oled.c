@@ -159,14 +159,14 @@ static void oled_display_init()
     oled_display = (unsigned char *) malloc(DISPLAY_HEIGHT / 4 * DISPLAY_WIDTH * sizeof(unsigned char *));
     for (i = 0; i < DISPLAY_HEIGHT / 4; i++) {
         for (j = 0; j < DISPLAY_WIDTH; j++) {
-            byte_at(oled_display, i, j) = 0x00;
+            oled_display[i * DISPLAY_WIDTH + j] = 0x00;
         }
     }
 }
 
 void oled_display_print(int x, int y)
 {
-    printf("Byte at x = %d, y = %d : 0x%02X\n", x, y, byte_at(oled_display, y, x));
+    printf("Byte at x = %d, y = %d : 0x%02X\n", x, y, oled_display[y * DISPLAY_WIDTH + x]);
 }
 
 void oled_enable_commands()
@@ -312,15 +312,15 @@ void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, unsigned int is
 
     // Update the stored display
     if (is_white) {
-        byte_at(oled_display, display_y, display_x) |= mask;
+        oled_display[display_y * DISPLAY_WIDTH + display_x] |= mask;
     } else {
-        byte_at(oled_display, display_y, display_x) &= inv_mask;
+        oled_display[display_y * DISPLAY_WIDTH + display_x] &= inv_mask;
     }
 
     // Write to the visible screen
     // We have to write two pixels at a time, so extract the two pixels that will be affected.
     pixel_pair_mask = 0xC0 >> ( (pixel_y % 8) / 2 * 2);
-    pixel_pair = byte_at(oled_display, display_y, display_x) & pixel_pair_mask;
+    pixel_pair = oled_display[display_y * DISPLAY_WIDTH + display_x] & pixel_pair_mask;
 
     // Right shift to get the actual value of the pixel pair
     pixel_pair >>= (6 - ((pixel_y % 8) / 2 * 2));

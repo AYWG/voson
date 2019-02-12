@@ -17,6 +17,8 @@ volatile unsigned int btn_type = 0;
 volatile unsigned int btn_press = 0;
 volatile unsigned int btn_debug = 0;
 
+unsigned char *foo;
+
 void SendByteSPI()
 {
 	SFRPAGE = 0x00;
@@ -162,17 +164,16 @@ void main(void)
 	// Display Init sequence
 	oled_init();
 
-	// foo = (unsigned char *) malloc(32 * 64 * sizeof(unsigned char *));
-	// for (i = 0; i < 32; i++)
-	// {
-	// 	for (j = 0; j < 64; j++)
-	// 	{
-	// 		byte_at(foo, i, j) = 0x00;
-	// 	}
-	// }
+	foo = (unsigned char *) malloc(32 * 64 * sizeof(unsigned char *));
+	for (i = 0; i < 32; i++)
+	{
+		for (j = 0; j < 64; j++)
+		{
+			foo[i * 64 + j] = 0x00;
+		}
+	}
 
 	// waitms(2000);
-	oled_clear();
 
 	CHARGE_EN = 0;
 
@@ -182,24 +183,38 @@ void main(void)
 
 		if (DEADMAN == 0){ // if the deadmans trigger is pressed down then send data
 			oled_clear();
-
-			// for (y = 0; y < 256; y++) {
+			// printf("before: 0x%02X\n", foo[1]);
+			// foo[1] = 0xFF;
+			// for (i = 0; i < 2000; i++) {
+			// 	printf("%d: 0x%02X\n",i, foo[i]);
+			// }
+			oled_draw2(main_menu, 2048);
+			// oled_draw2(main_menu + 256, 32);
+			// for (y = 0; y < 8; y++) {
 			// 	for (x = 0; x < 64; x++) {
-			// 		if (y % 2 == 0 && x % 2 == 0)
-			// 		oled_draw_pixel(x, y, 1);
+			// 		oled_display_print(x, y);
 			// 	}
 			// }
 
-			// waitms(1000);
-			// for (y = 0; y < 256; y++)
+			// for (y = 0; y < 16; y++) {
+			// 	for (x = 0; x < 64; x++) {
+			// 		oled_display_print(x, y);
+			// 		printf(" ");
+			// 	}
+
+			// 	printf("\n");
+			// }
+
+			// for (y = 16; y < 32; y++)
 			// {
 			// 	for (x = 0; x < 64; x++)
 			// 	{
-			// 		if (y % 2 == 1 && x % 2 == 1)
-			// 			oled_draw_pixel(x, y, 1);
+			// 		oled_display_print(x, y);
+			// 		printf(" ");
 			// 	}
+
+			// 	printf("\n");
 			// }
-			oled_draw2(main_menu, 512);
 		}
 
 		if (BOOT == 0){ btnpress(); } 					// Core code for home button functionality
