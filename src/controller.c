@@ -5,6 +5,7 @@
 #include "util.c"
 #include "oled.c"
 #include "i2c.c"
+#include "magneto.c"
 #include "init.c"
 volatile unsigned int menu_state = 0;
 
@@ -176,19 +177,22 @@ void main(void)
 	// waitms(2000);
 
 	CHARGE_EN = 0;
+	enable_magneto();
 
-	
 	while(1)
 	{
 
 		if (DEADMAN == 0){ // if the deadmans trigger is pressed down then send data
 			oled_clear();
+
+			printf("speed: %d\n", get_speed());
 			// printf("before: 0x%02X\n", foo[1]);
 			// foo[1] = 0xFF;
 			// for (i = 0; i < 2000; i++) {
 			// 	printf("%d: 0x%02X\n",i, foo[i]);
 			// }
-			oled_draw2(eco_bar, 128, 0, 16);
+			
+			// oled_draw2(h, 25, 0, 0);
 			// oled_draw2(main_menu + 256, 32);
 			// for (y = 0; y < 8; y++) {
 			// 	for (x = 0; x < 64; x++) {
@@ -205,16 +209,6 @@ void main(void)
 			// 	printf("\n");
 			// }
 
-			// for (y = 16; y < 32; y++)
-			// {
-			// 	for (x = 0; x < 64; x++)
-			// 	{
-			// 		oled_display_print(x, y);
-			// 		printf(" ");
-			// 	}
-
-			// 	printf("\n");
-			// }
 		}
 
 		if (BOOT == 0){ btnpress(); } 					// Core code for home button functionality

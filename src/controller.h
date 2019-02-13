@@ -11,7 +11,7 @@
 #define F_SCK_MAX 2000000L // Max SCK freq (Hz)
 #define BLE_FREQ 112500L
 
-#define ENABLE P1_2
+#define ENABLE P1_2 // Magnetoresistor
 #define CHARGE_EN P1_6
 #define UNITC P1_7
 #define NOTIF P2_0
