@@ -3,12 +3,14 @@
 #define ORIGIN_X 0
 #define ORIGIN_Y 0
 
-unsigned char *oled_display;
 
-static void oled_display_init()
+static uint8_t *oled_display;
+
+static 
+void oled_display_init(void)
 {
     int i, j;
-    oled_display = (unsigned char *) malloc(DISPLAY_HEIGHT / 4 * DISPLAY_WIDTH * sizeof(unsigned char *));
+    oled_display = (uint8_t *) malloc(DISPLAY_HEIGHT / 4 * DISPLAY_WIDTH * sizeof(uint8_t *));
     for (i = 0; i < DISPLAY_HEIGHT / 4; i++) {
         for (j = 0; j < DISPLAY_WIDTH; j++) {
             oled_display[i * DISPLAY_WIDTH + j] = 0x00;
@@ -21,17 +23,18 @@ void oled_display_print(int x, int y)
     printf("Byte at x = %d, y = %d : 0x%02X\n", x, y, oled_display[y * DISPLAY_WIDTH + x]);
 }
 
-void oled_enable_commands()
+void oled_enable_commands(void)
 {
     OLED_A0 = 0;
 }
 
-void oled_enable_draw()
+void oled_enable_draw(void)
 {
     OLED_A0 = 1;
 }
 
-void oled_write(unsigned char d)
+static 
+void oled_write(uint8_t d)
 {
     SFRPAGE = 0x00;
     OLED_SELECT = 0;
@@ -43,7 +46,8 @@ void oled_write(unsigned char d)
     OLED_SELECT = 1;
 }
 
-void oled_write_16(unsigned char d1, unsigned char d2)
+static 
+void oled_write_16(uint8_t d1, uint8_t d2)
 {
     SFRPAGE = 0x00;
     OLED_SELECT = 0;
@@ -93,7 +97,7 @@ void oled_set_cursor(unsigned int x, unsigned int y)
     oled_write(0x010 | (y >> 4));
 }
 
-void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, unsigned int is_white)
+void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, bool is_white)
 {
     unsigned int display_x = pixel_x;
     unsigned int display_y = pixel_y / 8;
@@ -101,10 +105,10 @@ void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, unsigned int is
     unsigned int cursor_x = pixel_x;
     unsigned int cursor_y = pixel_y / 2;
 
-    unsigned char mask = 0x80 >> (pixel_y % 8);
-    unsigned char inv_mask = ~mask;
+    uint8_t mask = 0x80 >> (pixel_y % 8);
+    uint8_t inv_mask = ~mask;
 
-    unsigned char pixel_pair_mask, pixel_pair;
+    uint8_t pixel_pair_mask, pixel_pair;
 
     oled_set_cursor(cursor_x, cursor_y);
     oled_enable_draw();
@@ -123,20 +127,23 @@ void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, unsigned int is
 
     // Right shift to get the actual value of the pixel pair
     pixel_pair >>= (6 - ((pixel_y % 8) / 2 * 2));
-    if (pixel_pair == 0) {
-        oled_write(0x00);
-    }
-    else if (pixel_pair == 1) {
-        oled_write(0x0F);
-    }
-    else if (pixel_pair == 2) {
-        oled_write(0xF0);
-    }
-    else if (pixel_pair == 3) {
-        oled_write(0xFF);
-    }
-    else {
-        printf("this should never happen\n");
+
+    switch(pixel_pair) {
+        case 0b00: 
+            oled_write(0x00);
+            break;
+        case 0b01:
+            oled_write(0x0F);
+            break;
+        case 0b10:
+            oled_write(0xF0);
+            break;
+        case 0b11:
+            oled_write(0xFF);
+            break;
+        default:
+            printf("oled_draw_pixel - invalid pixel_pair\n");
+            break;
     }
 }
 
@@ -146,26 +153,26 @@ void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, unsigned int is
  * start_x   : x coordinate of oled_display to draw at (0-63)
  * start_y   : y coordinate of oled_display to draw at (0-31)
  */
-void oled_draw2(unsigned char *image, int image_len, int start_x, int start_y)
+void oled_draw2(uint8_t *image, int image_len, int start_x, int start_y)
 {
-    unsigned char mask = 0x80;
-    unsigned char pixel;
-    unsigned char byte;
+    uint8_t mask = 0x80;
+    uint8_t pixel;
+    uint8_t byte;
     int page = start_y;
     int x = start_x;
     int y = 7;
     int i, j;
-    int is_white;
+    bool is_white;
     for (i = 0; i < image_len; i++)
     {
         byte = image[i];
         for (j = 0; j < 8; j++)
         {
-            is_white = 0;
+            is_white = false;
             pixel = byte & (mask >> j);
             if (pixel > 0)
             {
-                is_white = 1;
+                is_white = true;
             }
             oled_draw_pixel(x, (page * 8) + y, is_white);
             y--;
@@ -183,7 +190,7 @@ void oled_draw2(unsigned char *image, int image_len, int start_x, int start_y)
     }
 }
 
-void oled_clear()
+void oled_clear(void)
 {
     unsigned int x, y;
     for (y = 0; y < 256; y++)

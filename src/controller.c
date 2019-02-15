@@ -1,7 +1,11 @@
+#include "types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <EFM8LB1.h>
 #include "controller.h"
+
+// NOTE: THIS WAS ONLY DONE BECAUSE A LINKER WAS NOT AVAILABLE AT THE TIME OF DEVELOPMENT.
+#include "images.c"
 #include "util.c"
 #include "oled.c"
 #include "i2c.c"
@@ -17,8 +21,6 @@ volatile unsigned int btn_state = 0;
 volatile unsigned int btn_type = 0;
 volatile unsigned int btn_press = 0;
 volatile unsigned int btn_debug = 0;
-
-unsigned char *foo;
 
 void SendByteSPI()
 {
@@ -160,54 +162,20 @@ void main(void)
 	// Wake the board
 	
 	// Turn on magnetoresistor sensor
-	ENABLE = 0;
+	magneto_enable();
 
-	// Display Init sequence
 	oled_init();
 
-	foo = (unsigned char *) malloc(32 * 64 * sizeof(unsigned char *));
-	for (i = 0; i < 32; i++)
-	{
-		for (j = 0; j < 64; j++)
-		{
-			foo[i * 64 + j] = 0x00;
-		}
-	}
-
-	// waitms(2000);
-
 	CHARGE_EN = 0;
-	enable_magneto();
 
 	while(1)
 	{
+		// printf("speed: %d\n", get_speed());
 
-		if (DEADMAN == 0){ // if the deadmans trigger is pressed down then send data
+		if (DEADMAN == 0) {
 			oled_clear();
-
-			printf("speed: %d\n", get_speed());
-			// printf("before: 0x%02X\n", foo[1]);
-			// foo[1] = 0xFF;
-			// for (i = 0; i < 2000; i++) {
-			// 	printf("%d: 0x%02X\n",i, foo[i]);
-			// }
 			
-			// oled_draw2(h, 25, 0, 0);
-			// oled_draw2(main_menu + 256, 32);
-			// for (y = 0; y < 8; y++) {
-			// 	for (x = 0; x < 64; x++) {
-			// 		oled_display_print(x, y);
-			// 	}
-			// }
-
-			// for (y = 0; y < 16; y++) {
-			// 	for (x = 0; x < 64; x++) {
-			// 		oled_display_print(x, y);
-			// 		printf(" ");
-			// 	}
-
-			// 	printf("\n");
-			// }
+			oled_draw2(eco_bar, 128, 0, 0);
 
 		}
 

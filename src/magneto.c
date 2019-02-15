@@ -101,7 +101,7 @@ int get_speed(void)
     return speed;
 }
 
-void enable_magneto(void)
+void magneto_enable(void)
 {
     ENABLE = 0;
     InitADC();
