@@ -5,9 +5,12 @@
 #include "controller.h"
 
 // NOTE: THIS WAS ONLY DONE BECAUSE A LINKER WAS NOT AVAILABLE AT THE TIME OF DEVELOPMENT.
+#include "fonts.c"
 #include "images.c"
 #include "util.c"
 #include "oled.c"
+#include "settings.c"
+#include "main.c"
 #include "i2c.c"
 #include "magneto.c"
 #include "init.c"
@@ -140,9 +143,6 @@ void timer4_ISR(void) interrupt INTERRUPT_TIMER4 // Interrupt Service Routine fo
 
 void main(void)
 {
-	int i, j;
-	int y;
-	int x;
 	// Clear all pin states and reset
 	STATUS1 = 1;
 	NOTIF = 0;
@@ -175,7 +175,8 @@ void main(void)
 		if (DEADMAN == 0) {
 			oled_clear();
 			
-			oled_draw2(eco_bar, 128, 0, 0);
+			// oled_draw(eco_bar, 128, 0, 0);
+			oled_draw(two, 64, 0, 0, 16);
 
 		}
 
