@@ -1,7 +1,8 @@
-#include "types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <EFM8LB1.h>
+#include "types.h"
+#include "font.h"
 #include "controller.h"
 
 // NOTE: THIS WAS ONLY DONE BECAUSE A LINKER WAS NOT AVAILABLE AT THE TIME OF DEVELOPMENT.
@@ -130,8 +131,8 @@ void timer4_ISR(void) interrupt INTERRUPT_TIMER4 // Interrupt Service Routine fo
 		btn_state = 0;
 		stop_timer4 ();
 		printf("Double click!\n");
-		menu_state = menu_state == 2 ? 0 : menu_state + 1;
-		update_menu(menu_state);
+		// menu_state = menu_state == 2 ? 0 : menu_state + 1;
+		// update_menu(menu_state);
 	}
 
 }
@@ -176,7 +177,8 @@ void main(void)
 			oled_clear();
 			
 			// oled_draw(eco_bar, 128, 0, 0);
-			oled_draw(two, 64, 0, 0, 16);
+			// oled_draw(two, 64, 0, 0, 16);
+			main_draw_speed();
 
 		}
 

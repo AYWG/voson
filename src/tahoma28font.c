@@ -3,7 +3,7 @@
 // 
 
 // Character bitmaps for Tahoma 28pt
-const uint_8 tahoma_28ptBitmaps[] =
+const uint8_t tahoma_28ptBitmaps[] =
     {
         // @0 '0' (17 pixels wide)
         0b00000000, 0b00000000, 0b10000000, 0b11000000,

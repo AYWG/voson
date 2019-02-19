@@ -157,7 +157,7 @@ void oled_draw_pixel(uint32_t pixel_x, uint32_t pixel_y, bool is_white)
  * start_x   : x coordinate of oled_display to draw at (0-63)
  * start_y   : y coordinate of oled_display to draw at (0-31)
  */
-void oled_draw(uint8_t *image, int image_len, int start_x, int start_y, uint8_t page_width)
+void oled_draw(const uint8_t *image, int image_len, int start_x, int start_y, uint8_t page_width)
 {
     uint8_t mask = 0x80;
     uint8_t pixel;
@@ -202,8 +202,8 @@ void oled_clear(void)
     }
 }
 
-void update_menu(volatile int menu)
-{
+// void update_menu(volatile int menu)
+// {
     // oled_clear();
     // switch (menu)
     // {
@@ -214,4 +214,4 @@ void update_menu(volatile int menu)
     //     oled_draw(0, 0, 64, 124, settings_menu);
     //     break;
     // }
-}
+// }
