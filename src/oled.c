@@ -222,7 +222,7 @@ void oled_init()
 
 void oled_display_print(unsigned int x, unsigned int y)
 {
-    printf("Byte at x = %lu, y = %lu : 0x%02X\n", x, y, oled_display[y * DISPLAY_WIDTH + x]);
+    printf("Byte at x = %u, y = %u : 0x%02X\n", x, y, oled_display[y * DISPLAY_WIDTH + x]);
 }
 
 void oled_set_cursor(unsigned int x, unsigned int y)
@@ -289,7 +289,7 @@ void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, bool is_white)
  * start_x   : x coordinate of oled_display to draw at (0-63)
  * start_y   : y coordinate of oled_display to draw at (0-31)
  */
-void oled_draw(const unsigned char *image, unsigned int image_len, unsigned int start_x, unsigned int start_y, unsigned char page_width)
+void oled_draw(const unsigned char *image, unsigned int image_len, unsigned int start_x, unsigned int start_y, unsigned int page_width)
 {
     unsigned char mask = 0x80;
     unsigned char pixel;

@@ -16,7 +16,6 @@ void draw_number(unsigned int num, unsigned int start_x, unsigned int start_y)
 
 void main_draw_speed(void)
 {
-    // oled_draw(tahoma_28ptFontInfo.char_data + (tahoma_28ptFontInfo.char_info[2].offset), 64, 0, 17, 16);
     draw_number(0, 0, 0);
 }
 

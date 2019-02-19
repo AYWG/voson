@@ -1,7 +1,8 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <EFM8LB1.h>
-#include "types.h"
+#include <stdbool.h>
 #include "font.h"
 #include "controller.h"
 
@@ -10,6 +11,7 @@
 #include "images.c"
 #include "util.c"
 #include "oled.c"
+#include "common.c"
 #include "settings.c"
 #include "main.c"
 #include "i2c.c"
@@ -176,9 +178,10 @@ void main(void)
 		if (DEADMAN == 0) {
 			oled_clear();
 			
-			// oled_draw(eco_bar, 128, 0, 0);
+			oled_draw(switch_on, 50, 32, 0, 25 );
+			// oled_draw(eco_bar, 128, 0, 0, DISPLAY_WIDTH);
 			// oled_draw(main_menu, 2048, 0, 0, DISPLAY_WIDTH);
-			main_draw_speed();
+			// common_draw_text("Hello", 0, 0);
 
 		}
 

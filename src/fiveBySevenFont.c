@@ -569,7 +569,7 @@ const FONT_INFO fiveBySevenFontInfo = {
 	1,
 	'!', // Start Character
 	'}', // End Character
-	1,
+	2,
 	NULL,
 	fiveBySevenCharBitmaps
 };
