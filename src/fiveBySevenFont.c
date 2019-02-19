@@ -3,7 +3,7 @@
 //
 
 // 5x7 font
-const uint8_t fiveBySevenCharBitmaps[] =
+const unsigned char fiveBySevenCharBitmaps[] =
 	{
 		0b00000000, //
 		0b00000000, //

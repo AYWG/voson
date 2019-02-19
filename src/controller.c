@@ -177,7 +177,7 @@ void main(void)
 			oled_clear();
 			
 			// oled_draw(eco_bar, 128, 0, 0);
-			// oled_draw(two, 64, 0, 0, 16);
+			// oled_draw(main_menu, 2048, 0, 0, DISPLAY_WIDTH);
 			main_draw_speed();
 
 		}

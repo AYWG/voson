@@ -3,7 +3,7 @@
 // 
 
 // Character bitmaps for Tahoma 28pt
-const uint8_t tahoma_28ptBitmaps[] =
+const unsigned char tahoma_28ptBitmaps[] =
     {
         // @0 '0' (17 pixels wide)
         0b00000000, 0b00000000, 0b10000000, 0b11000000,
@@ -218,4 +218,3 @@ const FONT_INFO tahoma_28ptFontInfo =
 	tahoma_28ptDescriptors, //  Character descriptor array
 	tahoma_28ptBitmaps, //  Character bitmap array
 };
-
