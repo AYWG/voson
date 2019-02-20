@@ -1,12 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Main Menu
 ////////////////////////////////////////////////////////////////////////////////
-#define SPEED_TENS_DIGIT_ORIGIN_X 15
-#define SPEED_TENS_DIGIT_ORIGIN_Y 8
-#define SPEED_ONES_DIGIT_ORIGIN_X 35
-#define SPEED_ONES_DIGIT_ORIGIN_Y SPEED_TENS_DIGIT_ORIGIN_Y
+#define SPEED_TENS_DIGIT_START_X 15
+#define SPEED_TENS_DIGIT_START_Y 8
+#define SPEED_ONES_DIGIT_START_X 35
+#define SPEED_ONES_DIGIT_START_Y SPEED_TENS_DIGIT_START_Y
 
-
+#define SPEED_UNITS_START_X 20
+#define SPEED_UNITS_START_Y 13
 static
 void draw_number(unsigned int num, unsigned int start_x, unsigned int start_y)
 {
@@ -23,14 +24,14 @@ void main_draw_speed(unsigned int speed)
 {
     unsigned int tens_digit = speed / 10;
     unsigned int ones_digit = speed % 10;
-    draw_number(tens_digit, SPEED_TENS_DIGIT_ORIGIN_X, SPEED_TENS_DIGIT_ORIGIN_Y);
-    draw_number(ones_digit, SPEED_ONES_DIGIT_ORIGIN_X, SPEED_ONES_DIGIT_ORIGIN_Y);
+    draw_number(tens_digit, SPEED_TENS_DIGIT_START_X, SPEED_TENS_DIGIT_START_Y);
+    draw_number(ones_digit, SPEED_ONES_DIGIT_START_X, SPEED_ONES_DIGIT_START_Y);
 }
 
 void main_draw_speed_units(void)
 {
     // TODO: check if metric or imperial
-
+    common_draw_text("km / h", SPEED_UNITS_START_X, SPEED_UNITS_START_Y);
 }
 
 void main_draw_bat_per(void)
