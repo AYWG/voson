@@ -1,6 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Main Menu
 ////////////////////////////////////////////////////////////////////////////////
+#define SPEED_TENS_DIGIT_ORIGIN_X 15
+#define SPEED_TENS_DIGIT_ORIGIN_Y 8
+#define SPEED_ONES_DIGIT_ORIGIN_X 35
+#define SPEED_ONES_DIGIT_ORIGIN_Y SPEED_TENS_DIGIT_ORIGIN_Y
+
 
 static
 void draw_number(unsigned int num, unsigned int start_x, unsigned int start_y)
@@ -14,9 +19,12 @@ void draw_number(unsigned int num, unsigned int start_x, unsigned int start_y)
     );
 }
 
-void main_draw_speed(void)
+void main_draw_speed(unsigned int speed)
 {
-    draw_number(0, 0, 0);
+    unsigned int tens_digit = speed / 10;
+    unsigned int ones_digit = speed % 10;
+    draw_number(tens_digit, SPEED_TENS_DIGIT_ORIGIN_X, SPEED_TENS_DIGIT_ORIGIN_Y);
+    draw_number(ones_digit, SPEED_ONES_DIGIT_ORIGIN_X, SPEED_ONES_DIGIT_ORIGIN_Y);
 }
 
 void main_draw_speed_units(void)
