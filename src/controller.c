@@ -174,10 +174,11 @@ void main(void)
 	while(1)
 	{
 		if (DEADMAN == 0) {
-			// oled_clear();
+			oled_clear();
+			settings_draw();
 			// printf("speed: %d\n", get_speed());
-			get_speed();
-			printf("%f\n");
+			// get_speed();
+			// printf("%d\n", get_speed());
 
 			// oled_draw(switch_on, 50, 5, 0, 25 );
 			// oled_draw(eco_bar, 128, 0, 0, DISPLAY_WIDTH);

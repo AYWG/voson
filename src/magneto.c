@@ -79,7 +79,7 @@ int get_speed(void)
     int speed;
 
     // printf("P1.4: %f    P1.5: %f\n", adc1, adc2);
-    printf("adc1 - adc2: %f\n", adc1 - adc2);
+    // printf("adc1 - adc2: %f\n", adc1 - adc2);
 
     if (adc2 > RVS_THRESH_ADC2 && adc2 > FWD_THRESH_ADC2 && adc1 < RVS_THRESH_ADC1) //within zero speed range
         speed = 0;
