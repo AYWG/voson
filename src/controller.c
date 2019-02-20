@@ -178,10 +178,10 @@ void main(void)
 		if (DEADMAN == 0) {
 			oled_clear();
 			
-			oled_draw(switch_on, 50, 32, 0, 25 );
+			// oled_draw(switch_on, 50, 5, 0, 25 );
 			// oled_draw(eco_bar, 128, 0, 0, DISPLAY_WIDTH);
 			// oled_draw(main_menu, 2048, 0, 0, DISPLAY_WIDTH);
-			// common_draw_text("Hello", 0, 0);
+			common_draw_text("Hello", 0, 0);
 
 		}
 

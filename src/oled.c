@@ -294,8 +294,8 @@ void oled_draw(const unsigned char *image, unsigned int image_len, unsigned int 
     unsigned char mask = 0x80;
     unsigned char pixel;
     unsigned char byte;
-    int page = start_y;
-    int x = start_x;
+    unsigned int page = start_y;
+    unsigned int x = start_x;
     int y = 7;
     int i, j;
     bool is_white;
@@ -312,7 +312,7 @@ void oled_draw(const unsigned char *image, unsigned int image_len, unsigned int 
             {
                 y = 7;
                 x++;
-                if (x >= page_width)
+                if ((x - start_x) >= page_width)
                 {
                     x = start_x;
                     page++;
