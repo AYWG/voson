@@ -57,10 +57,10 @@ unsigned int ADC_at_Pin(unsigned char pin)
 }
 
 //averge for the adc value
-unsigned int ADCavg(unsigned char pin)
+float ADCavg(unsigned char pin)
 {
     unsigned int i;
-    float sum = 0;
+    unsigned int sum = 0;
     unsigned int avg = 10;
 
     for (i = 0; i < avg; i++)
@@ -68,28 +68,30 @@ unsigned int ADCavg(unsigned char pin)
         sum += ADC_at_Pin(pin);
     }
 
-    return sum / avg;
+    return (float) sum / avg;
 }
 
 //outputs relative speed according to the 2 adc values read from the magnetoresistor
 int get_speed(void)
 {
-    unsigned int adc1 = ADCavg(QFP32_MUX_P1_4);
-    unsigned int adc2 = ADCavg(QFP32_MUX_P1_5);
+    float adc1 = ADCavg(QFP32_MUX_P1_4);
+    float adc2 = ADCavg(QFP32_MUX_P1_5);
     int speed;
 
-    printf("P1.4: %i    P1.5: %i\n", adc1, adc2);
+    // printf("P1.4: %f    P1.5: %f\n", adc1, adc2);
+    printf("adc1 - adc2: %f\n", adc1 - adc2);
+
     if (adc2 > RVS_THRESH_ADC2 && adc2 > FWD_THRESH_ADC2 && adc1 < RVS_THRESH_ADC1) //within zero speed range
         speed = 0;
     else if (adc2 <= FWD_THRESH_ADC2)
     { //map adc value from range to 0-100
-        speed = 100 - (((float)adc2 - FWD_MAX) / (FWD_THRESH_ADC2 - FWD_MAX) * 100);
+        speed = 100 - ((adc2 - FWD_MAX) / (FWD_THRESH_ADC2 - FWD_MAX) * 100);
         if (speed > 100) //cap out at 100
             speed = 100;
     }
     else if (adc2 >= RVS_THRESH_ADC2)
     { //map adc value from range to -100-0
-        speed = -(((float)adc1 - RVS_THRESH_ADC1) / (RVS_MAX - RVS_THRESH_ADC1) * 100);
+        speed = -((adc1 - RVS_THRESH_ADC1) / (RVS_MAX - RVS_THRESH_ADC1) * 100);
         if (speed < -100) //cap out at -100
             speed = -100;
     }

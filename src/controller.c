@@ -173,17 +173,18 @@ void main(void)
 
 	while(1)
 	{
-		// printf("speed: %d\n", get_speed());
-
 		if (DEADMAN == 0) {
-			oled_clear();
-			
+			// oled_clear();
+			// printf("speed: %d\n", get_speed());
+			get_speed();
+			printf("%f\n");
+
 			// oled_draw(switch_on, 50, 5, 0, 25 );
 			// oled_draw(eco_bar, 128, 0, 0, DISPLAY_WIDTH);
 			// oled_draw(main_menu, 2048, 0, 0, DISPLAY_WIDTH);
 			// common_draw_text("Hello", 0, 0);
-			main_draw_speed(0);
-			main_draw_speed_units();
+			// main_draw_speed(0);
+			// main_draw_speed_units();
 		}
 
 		if (BOOT == 0){ btnpress(); } 					// Core code for home button functionality
