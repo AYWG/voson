@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Common Menu Stuff
 ////////////////////////////////////////////////////////////////////////////////
-#define DOWN_ARROW_START_Y 18
+#define DOWN_ARROW_START_Y 17
 #define CHILL_BAR_START_X 0
-#define CHILL_BAR_START_Y 22
+#define CHILL_BAR_START_Y 21
 #define ECO_BAR_START_X CHILL_BAR_START_X
 #define ECO_BAR_START_Y CHILL_BAR_START_Y
 #define SPORT_BAR_START_X CHILL_BAR_START_X
@@ -11,7 +11,7 @@
 #define TRACK_BAR_START_X CHILL_BAR_START_X
 #define TRACK_BAR_START_Y CHILL_BAR_START_Y
 #define MENU_BAR_START_X 0
-#define MENU_BAR_START_Y 20
+#define MENU_BAR_START_Y 19
 
 static
 void draw_char(unsigned char c, unsigned int start_x, unsigned int start_y, bit erase_en)

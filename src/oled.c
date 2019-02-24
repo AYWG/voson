@@ -87,7 +87,7 @@ void oled_init()
     oled_display_init();
 }
 
-void oled_display_print(unsigned int x, unsigned int y)
+void oled_display_print(unsigned char x, unsigned char y)
 {
     printf("Byte at x = %u, y = %u : 0x%02X\n", x, y, oled_display[y * DISPLAY_WIDTH + x]);
 }
@@ -100,7 +100,7 @@ void oled_set_cursor(unsigned int x, unsigned int y)
     oled_write(0x010 | (y >> 4));
 }
 
-void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, int is_white)
+void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, bit is_white)
 {
     unsigned int display_x = pixel_x;
     unsigned int display_y = pixel_y / 8;
@@ -144,9 +144,6 @@ void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, int is_white)
         case 0b11:
             oled_write(0xFF);
             break;
-        default:
-            printf("oled_draw_pixel - invalid pixel_pair: %lu\n", pixel_pair);
-            break;
     }
 }
 
@@ -168,7 +165,7 @@ void oled_draw(const unsigned char *image, unsigned int image_len,
     unsigned int x = start_x;
     int y = 7;
     int i, j;
-    int is_white;
+    bit is_white;
     for (i = 0; i < image_len; i++)
     {
         byte = image[i];
