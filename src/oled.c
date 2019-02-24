@@ -100,7 +100,7 @@ void oled_set_cursor(unsigned int x, unsigned int y)
     oled_write(0x010 | (y >> 4));
 }
 
-void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, bool is_white)
+void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, int is_white)
 {
     unsigned int display_x = pixel_x;
     unsigned int display_y = pixel_y / 8;
@@ -155,8 +155,11 @@ void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, bool is_white)
  * image_len : length of image
  * start_x   : x coordinate of oled_display to draw at (0-63)
  * start_y   : y coordinate of oled_display to draw at (0-31)
+ * erase_en  : enable erase or not
  */
-void oled_draw(const unsigned char *image, unsigned int image_len, unsigned int start_x, unsigned int start_y, unsigned int page_width)
+void oled_draw(const unsigned char *image, unsigned int image_len, 
+               unsigned int start_x, unsigned int start_y, unsigned int page_width,
+               bit erase_en)
 {
     unsigned char mask = 0x80;
     unsigned char pixel;
@@ -165,14 +168,14 @@ void oled_draw(const unsigned char *image, unsigned int image_len, unsigned int 
     unsigned int x = start_x;
     int y = 7;
     int i, j;
-    bool is_white;
+    int is_white;
     for (i = 0; i < image_len; i++)
     {
         byte = image[i];
         for (j = 0; j < 8; j++)
         {
             pixel = byte & (mask >> j);
-            is_white = pixel > 0;
+            is_white = erase_en ? FALSE : pixel > 0;
             oled_draw_pixel(x, (page * 8) + y, is_white);
             y--;
             if (y < 0)
@@ -201,16 +204,3 @@ void oled_clear(void)
     }
 }
 
-// void update_menu(volatile int menu)
-// {
-    // oled_clear();
-    // switch (menu)
-    // {
-    // case 0:
-    //     oled_draw(0, 0, 64, 124, main_menu);
-    //     break;
-    // case 1:
-    //     oled_draw(0, 0, 64, 124, settings_menu);
-    //     break;
-    // }
-// }

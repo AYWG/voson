@@ -8,48 +8,108 @@
 
 #define SPEED_UNITS_START_X 20
 #define SPEED_UNITS_START_Y 13
+
+#define BAT_START_X 45
+#define BAT_START_Y 1
+
+#define BAT_PER_START_X BAT_START_X
+#define BAT_PER_START_Y BAT_START_Y + 4
+
+#define BT_SIGNAL_START_X 10
+#define BT_SIGNAL_START_Y BAT_START_Y
+
+#define RANGE_TO_E_LABEL_START_X 10
+#define RANGE_TO_E_LABEL_START_Y 26
+#define RANGE_TO_E_START_X RANGE_TO_E_LABEL_START_X
+#define RANGE_TO_E_START_Y RANGE_TO_E_LABEL_START_Y + 1
+
+#define REMOTE_LABEL_START_X 20
+#define REMOTE_LABEL_START_Y 29
+#define REMOTE_BAT_PER_START_X REMOTE_LABEL_START_X
+#define REMOTE_BAT_PER_START_Y REMOTE_LABEL_START_Y + 1
+
+#define REMOTE_BAT_START_X 10
+#define REMOTE_BAT_START_Y REMOTE_LABEL_START_Y
+
 static
-void draw_number(unsigned int num, unsigned int start_x, unsigned int start_y)
+void draw_number(unsigned int num, unsigned int start_x, unsigned int start_y, bit erase_en)
 {
     oled_draw(
         tahoma_28ptFontInfo.char_data + tahoma_28ptFontInfo.char_info[num].offset,
         tahoma_28ptFontInfo.char_info[num].width_bits * tahoma_28ptFontInfo.height_pages,
         start_x,
         start_y,
-        tahoma_28ptFontInfo.char_info[num].width_bits
+        tahoma_28ptFontInfo.char_info[num].width_bits,
+        erase_en
     );
 }
 
-void main_draw_speed(unsigned int speed)
+void main_draw_speed(bit erase_en, unsigned int speed)
 {
     unsigned int tens_digit = speed / 10;
     unsigned int ones_digit = speed % 10;
-    draw_number(tens_digit, SPEED_TENS_DIGIT_START_X, SPEED_TENS_DIGIT_START_Y);
-    draw_number(ones_digit, SPEED_ONES_DIGIT_START_X, SPEED_ONES_DIGIT_START_Y);
+    draw_number(tens_digit, SPEED_TENS_DIGIT_START_X, SPEED_TENS_DIGIT_START_Y, erase_en);
+    draw_number(ones_digit, SPEED_ONES_DIGIT_START_X, SPEED_ONES_DIGIT_START_Y, erase_en);
 }
 
-void main_draw_speed_units(void)
+void main_draw_speed_units(bit erase_en)
 {
     // TODO: check if metric or imperial
-    common_draw_text("km / h", SPEED_UNITS_START_X, SPEED_UNITS_START_Y);
+    common_draw_text("km / h", SPEED_UNITS_START_X, SPEED_UNITS_START_Y, erase_en);
 }
 
-void main_draw_bat_per(void)
+void main_draw_bat(bit erase_en)
 {
-
+    oled_draw(battery_empty, sizeof battery_empty,BAT_START_X, BAT_START_Y, BATTERY_EMPTY_WIDTH, erase_en);
 }
 
-void main_draw_range_to_empty_label(void)
+void main_draw_bat_per(bit erase_en)
 {
-
+    common_draw_text("50 %", BAT_PER_START_X, BAT_PER_START_Y, erase_en);
 }
 
-void main_draw_range_to_empty(void)
+// void main_draw_bt_signal(bit erase_en)
+// {
+//     oled_draw(bt_signal_two, sizeof bt_signal_two, BT_SIGNAL_START_X, BT_SIGNAL_START_Y, BT_SIGNAL_WIDTH, erase_en);
+// }
+
+// void main_draw_range_to_empty_label(bit erase_en)
+// {
+//     common_draw_text("RANGE  TO  E", RANGE_TO_E_LABEL_START_X, RANGE_TO_E_LABEL_START_Y, erase_en);
+// }
+
+// void main_draw_range_to_empty(bit erase_en)
+// {
+//     common_draw_text("23         km", RANGE_TO_E_START_X, RANGE_TO_E_START_Y, erase_en);
+// }
+
+// void main_draw_remote_label(bit erase_en)
+// {
+//     common_draw_text("REMOTE", REMOTE_LABEL_START_X, REMOTE_LABEL_START_Y, erase_en);
+// }
+
+// void main_draw_remote_bat_per(bit erase_en)
+// {
+//     common_draw_text("50 %", REMOTE_BAT_PER_START_X, REMOTE_BAT_PER_START_Y, erase_en);
+// }
+
+// void main_draw_remote_bat(bit erase_en)
+// {
+//     oled_draw(battery_empty, sizeof battery_empty, REMOTE_BAT_START_X, REMOTE_BAT_START_Y, BATTERY_EMPTY_WIDTH, erase_en);
+// }
+
+void main_draw(bit erase_en)
 {
+    main_draw_bat(erase_en);
+    main_draw_bat_per(erase_en);
 
-}
+    main_draw_speed(erase_en, 66);
+    main_draw_speed_units(erase_en);
 
-void main_draw(void)
-{
+    // main_draw_range_to_empty_label(erase_en);
+    // main_draw_range_to_empty(erase_en);
 
+    // main_draw_remote_label(erase_en);
+    // main_draw_remote_bat_per(erase_en);
+    // main_draw_remote_bat(erase_en);
 }

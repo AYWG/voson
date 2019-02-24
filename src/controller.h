@@ -25,4 +25,7 @@
 #define OLED_A0 P3_0
 #define OLED_RESET P3_1
 
+#define TRUE 1
+#define FALSE 0
+
 #endif

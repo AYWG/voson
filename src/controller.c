@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <EFM8LB1.h>
-#include <stdbool.h>
 #include "font.h"
 #include "controller.h"
 
@@ -14,10 +13,10 @@
 #include "common.c"
 #include "settings.c"
 #include "main.c"
+#include "menu.c"
 #include "i2c.c"
 #include "magneto.c"
 #include "init.c"
-volatile unsigned int menu_state = 0;
 
 
 // address for FUXB = 0x46 and 0x45
@@ -132,9 +131,7 @@ void timer4_ISR(void) interrupt INTERRUPT_TIMER4 // Interrupt Service Routine fo
 		btn_debug = 3;
 		btn_state = 0;
 		stop_timer4 ();
-		printf("Double click!\n");
-		// menu_state = menu_state == 2 ? 0 : menu_state + 1;
-		// update_menu(menu_state);
+		menu_switch();
 	}
 
 }
@@ -159,7 +156,7 @@ void main(void)
 	
 	// Vibrate motor to give feedback
 	NOTIF = 1;
-	// waitms(20);
+	waitms(20);
 	NOTIF = 0;
 	
 	// Wake the board
@@ -168,6 +165,9 @@ void main(void)
 	magneto_enable();
 
 	oled_init();
+	oled_clear();
+	menu_init();
+	menu_draw();
 
 	CHARGE_EN = 0;
 
@@ -175,10 +175,8 @@ void main(void)
 	{
 		if (DEADMAN == 0) {
 			oled_clear();
-			settings_draw();
-			common_draw_menu_arrow();
-			common_draw_menu_bar();
-			common_draw_eco_bar();
+			// main_draw();
+			// settings_draw();
 			// printf("speed: %d\n", get_speed());
 			// get_speed();
 			// printf("%d\n", get_speed());
