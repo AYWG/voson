@@ -2,7 +2,7 @@
 #define SETTINGS_MENU 1
 #define OFF 2
 
-static volatile char menu_state;
+static volatile unsigned char menu_state;
 
 /* To be called as part of controller initialization */
 void menu_init(void) 

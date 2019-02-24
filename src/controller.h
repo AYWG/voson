@@ -11,6 +11,11 @@
 #define F_SCK_MAX 2000000L // Max SCK freq (Hz)
 #define BLE_FREQ 112500L
 
+//button settings
+#define DEBOUNCE 5
+#define HOLD_TIME 400
+#define DC_GAP 100
+
 #define ENABLE P1_2 // Magnetoresistor
 #define CHARGE_EN P1_6
 #define UNITC P1_7

@@ -76,66 +76,112 @@ void low_power_sleep(){
 // Core code for home button functionality //
 /////////////////////////////////////////////
 	
-void btnpress() { // need to re-map pins to enable interrupts 
-	if (btn_press == 0) {
-		SFRPAGE = 0x10;
-		TMR4CN0 = 0b0000_0111; // Timer 4 start
-		SFRPAGE = 0x00;
-		btn_press = 1;
-	}
+// void btnpress() { // need to re-map pins to enable interrupts 
+// 	if (btn_press == 0) {
+// 		SFRPAGE = 0x10;
+// 		TMR4CN0 = 0b0000_0111; // Timer 4 start
+// 		SFRPAGE = 0x00;
+// 		btn_press = 1;
+// 	}
+// }
+
+// void stop_timer4() {
+// 	SFRPAGE = 0x10;
+// 	TMR4CN0 = 0b0000_0011; //Stop the timer
+// 	SFRPAGE = 0x00;
+// }
+
+// void timer4_ISR(void) interrupt INTERRUPT_TIMER4 // Interrupt Service Routine for timer 4
+// { 
+// 	SFRPAGE = 0x10;
+// 	TMR4CN0 = 0b0000_0111; //Reset the interrupt
+// 	SFRPAGE = 0x00;
+
+// 	if (BOOT == 0 && btn_state == 0){
+// 		btn_state = 1;
+// 	}
+
+// 	// Hold click pre-state
+// 	else if (BOOT == 0 && btn_state == 1){ // if high 
+// 		btn_state = 3;
+// 	}
+
+// 	// Double click or single click pre-state
+// 	else if (BOOT == 1 && btn_state == 1){
+// 		btn_state = 2;
+// 	}
+
+// 	// Hold click
+// 	else if (BOOT == 0 && btn_state == 3){ // if high 
+// 		btn_debug = 1;
+// 		btn_state = 0;
+// 		stop_timer4 ();
+// 		low_power_sleep ();
+// 	}
+
+// 	// Single click
+// 	else if (BOOT == 1 && btn_state == 2){ // if low 
+// 		btn_debug = 2;
+// 		btn_state = 0;
+// 		stop_timer4 ();
+// 		setting_select_switch();
+// 	}
+
+// 	// Double click
+// 	else if (BOOT == 0 && btn_state == 2){ // if high 
+// 		btn_debug = 3;
+// 		btn_state = 0;
+// 		stop_timer4 ();
+// 		menu_switch();
+// 	}
+
+// }
+
+void singleclick(void)
+{
+	setting_select_switch();
 }
 
-void stop_timer4() {
-	SFRPAGE = 0x10;
-	TMR4CN0 = 0b0000_0011; //Stop the timer
-	SFRPAGE = 0x00;
+void doubleclick(void)
+{
+	menu_switch();
 }
 
-void timer4_ISR(void) interrupt INTERRUPT_TIMER4 // Interrupt Service Routine for timer 4
-{ 
-	SFRPAGE = 0x10;
-	TMR4CN0 = 0b0000_0111; //Reset the interrupt
-	SFRPAGE = 0x00;
-
-	if (BOOT == 0 && btn_state == 0){
-		btn_state = 1;
-	}
-
-	// Hold click pre-state
-	else if (BOOT == 0 && btn_state == 1){ // if high 
-		btn_state = 3;
-	}
-
-	// Double click or single click pre-state
-	else if (BOOT == 1 && btn_state == 1){
-		btn_state = 2;
-	}
-
-	// Hold click
-	else if (BOOT == 0 && btn_state == 3){ // if high 
-		btn_debug = 1;
-		btn_state = 0;
-		stop_timer4 ();
-		low_power_sleep ();
-	}
-
-	// Single click
-	else if (BOOT == 1 && btn_state == 2){ // if low 
-		btn_debug = 2;
-		btn_state = 0;
-		stop_timer4 ();
-	}
-
-	// Double click
-	else if (BOOT == 0 && btn_state == 2){ // if high 
-		btn_debug = 3;
-		btn_state = 0;
-		stop_timer4 ();
-		menu_switch();
-	}
-
+void longclick(void)
+{
 }
 
+void pb_event(void)
+{
+	int i = 0;
+
+	//check if there is a long press
+	while (BOOT == 0)
+	{
+		if (i >= HOLD_TIME)
+		{
+			longclick();
+			waitms(DEBOUNCE * 100); //to avoid command overlap
+			return;					//button event is a long press
+		}
+		waitms(DEBOUNCE);
+		i++;
+	}
+
+	//check if there is a double click
+	for (i = DC_GAP; i != 0; i--)
+	{
+		if (BOOT == 0)
+		{
+			doubleclick();
+			return; //button event is a double click
+		}
+		waitms(DEBOUNCE);
+	}
+
+	singleclick(); //otherwise button event is a single click
+	return;
+}
 
 /////////////////////////////////
 // Core code for main function //
@@ -148,6 +194,7 @@ void main(void)
 	NOTIF = 0;
 	BLE_PWR = 1;
 	ENABLE = 1;
+	BOOT = 1;
 	
 	// Test Battery Level
 	
@@ -173,8 +220,14 @@ void main(void)
 
 	while(1)
 	{
+		waitms(100);
+		if (BOOT == 0) {
+			pb_event();
+			waitms(100);
+		}
+
 		if (DEADMAN == 0) {
-			oled_clear();
+
 			// main_draw();
 			// settings_draw();
 			// printf("speed: %d\n", get_speed());
@@ -183,8 +236,7 @@ void main(void)
 
 		}
 
-		if (BOOT == 0){ btnpress(); } 					// Core code for home button functionality
-		else { if (btn_state != 2){ btn_press = 0; } }	// keep these two lines together. 
-		
+		// if (BOOT == 0){ btnpress(); } 					// Core code for home button functionality
+		// else { if (btn_state != 2){ btn_press = 0; } }	// keep these two lines together. 
 	}
 }	

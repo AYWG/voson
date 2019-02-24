@@ -154,7 +154,7 @@ void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, bit is_white)
  * start_y   : y coordinate of oled_display to draw at (0-31)
  * erase_en  : enable erase or not
  */
-void oled_draw(const unsigned char *image, unsigned int image_len, 
+void oled_draw(const unsigned char *image, unsigned char image_len, 
                unsigned int start_x, unsigned int start_y, unsigned int page_width,
                bit erase_en)
 {
@@ -164,7 +164,7 @@ void oled_draw(const unsigned char *image, unsigned int image_len,
     unsigned int page = start_y;
     unsigned int x = start_x;
     int y = 7;
-    int i, j;
+    unsigned char i, j;
     bit is_white;
     for (i = 0; i < image_len; i++)
     {
