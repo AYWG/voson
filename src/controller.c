@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <EFM8LB1.h>
 #include "font.h"
 #include "controller.h"
@@ -27,7 +28,7 @@
 // volatile unsigned int btn_debug = 0;
 
 void SendByteSPI()
-{
+{        
 	SFRPAGE = 0x00;
 	OLED_SELECT = 0;
 	SPI0DAT = 0xA5;
@@ -197,6 +198,8 @@ void deadman_event(void)
 
 void main(void)
 {
+	unsigned char speed = 0;
+	unsigned char i = 0;
 	// Clear all pin states and reset
 	STATUS1 = 1;
 	NOTIF = 0;
@@ -219,10 +222,12 @@ void main(void)
 	oled_init();
 	oled_clear();
 	menu_init();
+	main_init();
 	settings_init();
 	menu_draw();
 
 	CHARGE_EN = 0;
+	printf("%f");
 
 	while(1)
 	{
@@ -236,9 +241,18 @@ void main(void)
 			deadman_event();
 
 			// printf("speed: %d\n", get_speed());
+			printf("angle %f\n", get_angle());
 			// get_speed();
 			// printf("%d\n", get_speed());
 
+		}
+		i++;
+		if (i % 10 == 0) {
+			speed++;
+			if (speed == 100) speed = 0;
+			if (menu_state == MAIN_MENU) {
+				main_update_speed(speed);
+			}
 		}
 
 		// if (BOOT == 0){ btnpress(); } 					// Core code for home button functionality

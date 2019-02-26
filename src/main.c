@@ -33,6 +33,8 @@
 #define REMOTE_BAT_START_X 5
 #define REMOTE_BAT_START_Y REMOTE_LABEL_START_Y - 1
 
+static unsigned char current_speed;
+
 static
 void draw_number(unsigned int num, unsigned int start_x, unsigned int start_y, bit erase_en)
 {
@@ -113,7 +115,7 @@ void main_draw(bit erase_en)
     main_draw_bt_signal(erase_en);
     main_draw_bt_signal_val(erase_en);
 
-    main_draw_speed(erase_en, 66);
+    main_draw_speed(erase_en, current_speed);
     main_draw_speed_units(erase_en);
 
     main_draw_range_to_empty_label(erase_en);
@@ -122,4 +124,18 @@ void main_draw(bit erase_en)
     main_draw_remote_label(erase_en);
     main_draw_remote_bat_per(erase_en);
     main_draw_remote_bat(erase_en);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void main_init(void)
+{
+    current_speed = 0;
+}
+
+void main_update_speed(unsigned char new_speed)
+{
+    main_draw_speed(ERASE, current_speed);
+    current_speed = new_speed;
+    main_draw_speed(DRAW, new_speed);
 }
