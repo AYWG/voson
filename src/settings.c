@@ -72,7 +72,7 @@ void settings_draw_bat_per_setting(bit erase_en)
 
 void settings_draw_bat_per_selected_line(bit erase_en)
 {
-    common_draw_text("______", BAT_PER_SETTING_START_X, BAT_PER_SETTING_START_Y + 1, erase_en);
+    common_draw_text("------", BAT_PER_SETTING_START_X, BAT_PER_SETTING_START_Y + 1, erase_en);
 }
 
 void settings_draw_bat_per_switch(bit erase_en, switch_state state)
@@ -91,7 +91,7 @@ void settings_draw_ble_per_setting(bit erase_en)
 
 void settings_draw_ble_per_selected_line(bit erase_en)
 {
-    common_draw_text("______", BLE_PER_SETTING_START_X, BLE_PER_SETTING_START_Y + 1, erase_en);
+    common_draw_text("------", BLE_PER_SETTING_START_X, BLE_PER_SETTING_START_Y + 1, erase_en);
 }
 
 void settings_draw_ble_per_switch(bit erase_en, switch_state state)
@@ -110,7 +110,7 @@ void settings_draw_metric_setting(bit erase_en)
 
 void settings_draw_metric_selected_line(bit erase_en)
 {
-    common_draw_text("______", METRIC_SETTING_START_X, METRIC_SETTING_START_Y + 1, erase_en);
+    common_draw_text("------", METRIC_SETTING_START_X, METRIC_SETTING_START_Y + 1, erase_en);
 }
 
 void settings_draw_metric_switch(bit erase_en, switch_state state)
@@ -129,7 +129,7 @@ void settings_draw_low_power_setting(bit erase_en)
 
 void settings_draw_low_power_selected_line(bit erase_en)
 {
-    common_draw_text("______", LOW_POWER_SETTING_START_X, LOW_POWER_SETTING_START_Y + 1, erase_en);
+    common_draw_text("------", LOW_POWER_SETTING_START_X, LOW_POWER_SETTING_START_Y + 1, erase_en);
 }
 
 void settings_draw_low_power_switch(bit erase_en, switch_state state)
