@@ -60,6 +60,65 @@ void oled_write_16(unsigned char d1, unsigned char d2)
     OLED_SELECT = 1;
 }
 
+static void oled_set_cursor(unsigned int x, unsigned int y)
+{
+    oled_enable_commands();
+    oled_write_16(0xB0, x);
+    oled_write(y & 15);
+    oled_write(0x010 | (y >> 4));
+}
+
+static void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, bit is_white)
+{
+    unsigned int display_x = pixel_x;
+    unsigned int display_y = pixel_y / 8;
+
+    unsigned int cursor_x = pixel_x;
+    unsigned int cursor_y = pixel_y / 2;
+
+    unsigned char mask = 0x80 >> (pixel_y % 8);
+    unsigned char inv_mask = ~mask;
+
+    unsigned char pixel_pair_mask, pixel_pair;
+
+    oled_set_cursor(cursor_x, cursor_y);
+    oled_enable_draw();
+
+    // Update the stored display
+    if (is_white)
+    {
+        oled_display[display_y * DISPLAY_WIDTH + display_x] |= mask;
+    }
+    else
+    {
+        oled_display[display_y * DISPLAY_WIDTH + display_x] &= inv_mask;
+    }
+
+    // Write to the visible screen
+    // We have to write two pixels at a time, so extract the two pixels that will be affected.
+    pixel_pair_mask = 0xC0 >> ((pixel_y % 8) / 2 * 2);
+    pixel_pair = oled_display[display_y * DISPLAY_WIDTH + display_x] & pixel_pair_mask;
+
+    // Right shift to get the actual value of the pixel pair
+    pixel_pair >>= (6 - ((pixel_y % 8) / 2 * 2));
+
+    switch (pixel_pair)
+    {
+    case 0b00:
+        oled_write(0x00);
+        break;
+    case 0b01:
+        oled_write(0x0F);
+        break;
+    case 0b10:
+        oled_write(0xF0);
+        break;
+    case 0b11:
+        oled_write(0xFF);
+        break;
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 void oled_init()
@@ -90,61 +149,6 @@ void oled_init()
 void oled_display_print(unsigned char x, unsigned char y)
 {
     printf("Byte at x = %u, y = %u : 0x%02X\n", x, y, oled_display[y * DISPLAY_WIDTH + x]);
-}
-
-void oled_set_cursor(unsigned int x, unsigned int y)
-{
-    oled_enable_commands();
-    oled_write_16(0xB0, x);
-    oled_write(y & 15);
-    oled_write(0x010 | (y >> 4));
-}
-
-void oled_draw_pixel(unsigned int pixel_x, unsigned int pixel_y, bit is_white)
-{
-    unsigned int display_x = pixel_x;
-    unsigned int display_y = pixel_y / 8;
-
-    unsigned int cursor_x = pixel_x;
-    unsigned int cursor_y = pixel_y / 2;
-
-    unsigned char mask = 0x80 >> (pixel_y % 8);
-    unsigned char inv_mask = ~mask;
-
-    unsigned char pixel_pair_mask, pixel_pair;
-
-    oled_set_cursor(cursor_x, cursor_y);
-    oled_enable_draw();
-
-    // Update the stored display
-    if (is_white) {
-        oled_display[display_y * DISPLAY_WIDTH + display_x] |= mask;
-    } else {
-        oled_display[display_y * DISPLAY_WIDTH + display_x] &= inv_mask;
-    }
-
-    // Write to the visible screen
-    // We have to write two pixels at a time, so extract the two pixels that will be affected.
-    pixel_pair_mask = 0xC0 >> ( (pixel_y % 8) / 2 * 2);
-    pixel_pair = oled_display[display_y * DISPLAY_WIDTH + display_x] & pixel_pair_mask;
-
-    // Right shift to get the actual value of the pixel pair
-    pixel_pair >>= (6 - ((pixel_y % 8) / 2 * 2));
-
-    switch(pixel_pair) {
-        case 0b00: 
-            oled_write(0x00);
-            break;
-        case 0b01:
-            oled_write(0x0F);
-            break;
-        case 0b10:
-            oled_write(0xF0);
-            break;
-        case 0b11:
-            oled_write(0xFF);
-            break;
-    }
 }
 
 /**

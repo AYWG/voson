@@ -138,7 +138,9 @@ void low_power_sleep(){
 
 void singleclick(void)
 {
-	setting_select_switch();
+	if (menu_state == SETTINGS_MENU) {
+		setting_select_switch();
+	}
 }
 
 void doubleclick(void)
