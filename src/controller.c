@@ -18,14 +18,13 @@
 #include "magneto.c"
 #include "init.c"
 
-
 // address for FUXB = 0x46 and 0x45
 // address for current = 0xAA 0xAB
 
-volatile unsigned int btn_state = 0;
-volatile unsigned int btn_type = 0;
-volatile unsigned int btn_press = 0;
-volatile unsigned int btn_debug = 0;
+// volatile unsigned int btn_state = 0;
+// volatile unsigned int btn_type = 0;
+// volatile unsigned int btn_press = 0;
+// volatile unsigned int btn_debug = 0;
 
 void SendByteSPI()
 {
@@ -183,6 +182,13 @@ void pb_event(void)
 	return;
 }
 
+void deadman_event(void)
+{
+	if (menu_state == SETTINGS_MENU) {
+		settings_toggle();
+	}
+}
+
 /////////////////////////////////
 // Core code for main function //
 /////////////////////////////////
@@ -200,13 +206,10 @@ void main(void)
 	
 	// Turn on LED to indicate that the controller is on
 	
-	
 	// Vibrate motor to give feedback
 	NOTIF = 1;
 	waitms(20);
 	NOTIF = 0;
-	
-	// Wake the board
 	
 	// Turn on magnetoresistor sensor
 	magneto_enable();
@@ -214,6 +217,7 @@ void main(void)
 	oled_init();
 	oled_clear();
 	menu_init();
+	settings_init();
 	menu_draw();
 
 	CHARGE_EN = 0;
@@ -227,9 +231,8 @@ void main(void)
 		}
 
 		if (DEADMAN == 0) {
+			deadman_event();
 
-			// main_draw();
-			// settings_draw();
 			// printf("speed: %d\n", get_speed());
 			// get_speed();
 			// printf("%d\n", get_speed());

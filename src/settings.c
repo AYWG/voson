@@ -6,29 +6,27 @@
 #define TITLE_START_Y 1
 #define SETTINGS_SPACING 2
 
+#define NUM_SETTINGS 4
+
 #define BAT_PER_SETTING "BAT PER"
-#define BAT_PER_SELECTED 0
 #define BAT_PER_SETTING_START_X 1
 #define BAT_PER_SETTING_START_Y 4
 #define BAT_PER_SWITCH_START_X 35
 #define BAT_PER_SWITCH_START_Y BAT_PER_SETTING_START_Y
 
 #define BLE_PER_SETTING "BLE PER"
-#define BLE_PER_SELECTED 1
 #define BLE_PER_SETTING_START_X BAT_PER_SETTING_START_X
 #define BLE_PER_SETTING_START_Y BAT_PER_SETTING_START_Y + SETTINGS_SPACING
 #define BLE_PER_SWITCH_START_X BAT_PER_SWITCH_START_X
 #define BLE_PER_SWITCH_START_Y BLE_PER_SETTING_START_Y
 
 #define METRIC_SETTING "METRIC"
-#define METRIC_SELECTED 2
 #define METRIC_SETTING_START_X BAT_PER_SETTING_START_X
 #define METRIC_SETTING_START_Y BLE_PER_SETTING_START_Y + SETTINGS_SPACING
 #define METRIC_SWITCH_START_X BAT_PER_SWITCH_START_X
 #define METRIC_SWITCH_START_Y METRIC_SETTING_START_Y
 
 #define LOW_POWER_SETTING "LOW   P"
-#define LOW_POWER_SELECTED 3
 #define LOW_POWER_SETTING_START_X BAT_PER_SETTING_START_X
 #define LOW_POWER_SETTING_START_Y METRIC_SETTING_START_Y + SETTINGS_SPACING
 #define LOW_POWER_SWITCH_START_X BAT_PER_SWITCH_START_X
@@ -45,7 +43,22 @@
 #define VERSION_START_X 1
 #define VERSION_START_Y 27
 
-static volatile unsigned char selected_setting;
+typedef enum {
+    BAT_PER, BLE_PER, METRIC, LOW_POWER
+} setting_id;
+
+typedef enum {
+    ON, OFF
+} switch_state;
+
+typedef struct {
+    switch_state state;
+    setting_id id;
+} setting_t;
+
+static setting_t settings[NUM_SETTINGS];
+
+static volatile setting_t *selected_setting;
 
 void settings_draw_title(bit erase_en)
 {
@@ -62,9 +75,13 @@ void settings_draw_bat_per_selected_line(bit erase_en)
     common_draw_text("______", BAT_PER_SETTING_START_X, BAT_PER_SETTING_START_Y + 1, erase_en);
 }
 
-void settings_draw_bat_per_switch(bit erase_en)
+void settings_draw_bat_per_switch(bit erase_en, switch_state state)
 {
-    oled_draw(switch_off, sizeof switch_off, BAT_PER_SWITCH_START_X, BAT_PER_SWITCH_START_Y, SWITCH_WIDTH, erase_en);
+    if (state == ON) {
+        oled_draw(switch_on, sizeof switch_on, BAT_PER_SWITCH_START_X, BAT_PER_SWITCH_START_Y, SWITCH_WIDTH, erase_en);
+    } else {
+        oled_draw(switch_off, sizeof switch_off, BAT_PER_SWITCH_START_X, BAT_PER_SWITCH_START_Y, SWITCH_WIDTH, erase_en);
+    }
 }
 
 void settings_draw_ble_per_setting(bit erase_en)
@@ -77,10 +94,13 @@ void settings_draw_ble_per_selected_line(bit erase_en)
     common_draw_text("______", BLE_PER_SETTING_START_X, BLE_PER_SETTING_START_Y + 1, erase_en);
 }
 
-void settings_draw_ble_per_switch(bit erase_en)
+void settings_draw_ble_per_switch(bit erase_en, switch_state state)
 {
-    // TODO: switch on or off depending on state
-    oled_draw(switch_off, sizeof switch_off, BLE_PER_SWITCH_START_X, BLE_PER_SWITCH_START_Y, SWITCH_WIDTH, erase_en);
+    if (state == ON) {
+        oled_draw(switch_on, sizeof switch_on, BLE_PER_SWITCH_START_X, BLE_PER_SWITCH_START_Y, SWITCH_WIDTH, erase_en);
+    } else {
+        oled_draw(switch_off, sizeof switch_off, BLE_PER_SWITCH_START_X, BLE_PER_SWITCH_START_Y, SWITCH_WIDTH, erase_en);
+    }
 }
 
 void settings_draw_metric_setting(bit erase_en)
@@ -93,9 +113,13 @@ void settings_draw_metric_selected_line(bit erase_en)
     common_draw_text("______", METRIC_SETTING_START_X, METRIC_SETTING_START_Y + 1, erase_en);
 }
 
-void settings_draw_metric_switch(bit erase_en)
+void settings_draw_metric_switch(bit erase_en, switch_state state)
 {
-    oled_draw(switch_off, sizeof switch_off, METRIC_SWITCH_START_X, METRIC_SWITCH_START_Y, SWITCH_WIDTH, erase_en);
+    if (state == ON) {
+        oled_draw(switch_on, sizeof switch_on, METRIC_SWITCH_START_X, METRIC_SWITCH_START_Y, SWITCH_WIDTH, erase_en);
+    } else {
+        oled_draw(switch_off, sizeof switch_off, METRIC_SWITCH_START_X, METRIC_SWITCH_START_Y, SWITCH_WIDTH, erase_en);
+    }
 }
 
 void settings_draw_low_power_setting(bit erase_en)
@@ -108,10 +132,13 @@ void settings_draw_low_power_selected_line(bit erase_en)
     common_draw_text("______", LOW_POWER_SETTING_START_X, LOW_POWER_SETTING_START_Y + 1, erase_en);
 }
 
-void settings_draw_low_power_switch(bit erase_en)
+void settings_draw_low_power_switch(bit erase_en, switch_state state)
 {
-    // TODO: switch on or off depending on state
-    oled_draw(switch_off, sizeof switch_off, LOW_POWER_SWITCH_START_X, LOW_POWER_SWITCH_START_Y, SWITCH_WIDTH, erase_en);
+    if (state == ON) {
+        oled_draw(switch_on, sizeof switch_on, LOW_POWER_SWITCH_START_X, LOW_POWER_SWITCH_START_Y, SWITCH_WIDTH, erase_en);
+    } else {
+        oled_draw(switch_off, sizeof switch_off, LOW_POWER_SWITCH_START_X, LOW_POWER_SWITCH_START_Y, SWITCH_WIDTH, erase_en);
+    }
 }
 
 void settings_draw_odo_setting(bit erase_en)
@@ -135,54 +162,93 @@ void settings_draw_version_info(bit erase_en)
 
 void settings_draw_selected_line(bit erase_en)
 {
-    switch (selected_setting)
+    switch (selected_setting->id)
     {
-        case BAT_PER_SELECTED:
+        case BAT_PER:
             settings_draw_low_power_selected_line(TRUE);
             settings_draw_bat_per_selected_line(erase_en);
             break;
 
-        case BLE_PER_SELECTED:
+        case BLE_PER:
             settings_draw_bat_per_selected_line(TRUE);
             settings_draw_ble_per_selected_line(erase_en);
             break;
 
-        case METRIC_SELECTED:
+        case METRIC:
             settings_draw_ble_per_selected_line(TRUE);
             settings_draw_metric_selected_line(erase_en);
             break;
         
-        case LOW_POWER_SELECTED:
+        case LOW_POWER:
             settings_draw_metric_selected_line(TRUE);
             settings_draw_low_power_selected_line(erase_en);
             break;
     }
 }
 
-void setting_select_switch(void)
+void settings_refresh_switch(setting_id id)
 {
-    selected_setting = selected_setting == LOW_POWER_SELECTED ? BAT_PER_SELECTED : selected_setting + 1;
-    settings_draw_selected_line(FALSE);
+    switch(id)
+    {
+        case BAT_PER:
+            settings_draw_bat_per_switch(ERASE, ~settings[id].state);
+            settings_draw_bat_per_switch(DRAW, settings[id].state);
+            break;
+            
+        case BLE_PER:
+            settings_draw_ble_per_switch(ERASE, ~settings[id].state);
+            settings_draw_ble_per_switch(DRAW, settings[id].state);
+            break;
+
+        case METRIC:
+            settings_draw_metric_switch(ERASE, ~settings[id].state);
+            settings_draw_metric_switch(DRAW, settings[id].state);
+            break;
+
+        case LOW_POWER:
+            settings_draw_low_power_switch(ERASE, ~settings[id].state);
+            settings_draw_low_power_switch(DRAW, settings[id].state);
+            break;
+    }
 }
 
 void settings_draw(bit erase_en)
 {
     settings_draw_title(erase_en);
     settings_draw_bat_per_setting(erase_en);
-    settings_draw_bat_per_switch(erase_en);
+    settings_draw_bat_per_switch(erase_en, settings[BAT_PER].state);
     settings_draw_ble_per_setting(erase_en);
-    settings_draw_ble_per_switch(erase_en);
+    settings_draw_ble_per_switch(erase_en, settings[BLE_PER].state);
     settings_draw_metric_setting(erase_en);
-    settings_draw_metric_switch(erase_en);
+    settings_draw_metric_switch(erase_en, settings[METRIC].state);
     settings_draw_low_power_setting(erase_en);
-    settings_draw_low_power_switch(erase_en);
+    settings_draw_low_power_switch(erase_en, settings[LOW_POWER].state);
     settings_draw_odo_setting(erase_en);
     settings_draw_odo_counter(erase_en);
 
     settings_draw_version_info(erase_en);
 
-    selected_setting = 0;
     settings_draw_selected_line(erase_en);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+void settings_init(void)
+{
+    unsigned char i;
+    for (i = 0; i < NUM_SETTINGS; i++) {
+        settings[i].id = i;
+        settings[i].state = OFF;
+    }
+}
+
+void setting_select_switch(void)
+{
+    selected_setting = selected_setting->id == LOW_POWER ? &settings[BAT_PER] : &settings[selected_setting->id + 1];
+    settings_draw_selected_line(FALSE);
+}
+
+void settings_toggle(void)
+{
+    selected_setting->state = selected_setting->state ^ 1;
+    settings_refresh_switch(selected_setting->id);
+}

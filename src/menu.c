@@ -1,8 +1,6 @@
-#define MAIN_MENU 0
-#define SETTINGS_MENU 1
-#define OFF 2
+typedef enum { MAIN_MENU, SETTINGS_MENU, OFF_MENU } menu;
 
-static volatile unsigned char menu_state;
+static volatile menu menu_state;
 
 /* To be called as part of controller initialization */
 void menu_init(void) 
@@ -29,7 +27,7 @@ void menu_draw(void)
         settings_draw(FALSE);
         break;
 
-    case OFF:
+    case OFF_MENU:
         // Erase everything
         common_draw_menu_arrow(TRUE, menu_state - 1);
         common_draw_menu_bar(TRUE);
@@ -41,7 +39,7 @@ void menu_draw(void)
 
 void menu_switch(void)
 {
-    menu_state = menu_state == OFF ? MAIN_MENU : menu_state + 1;
+    menu_state = menu_state == OFF_MENU ? MAIN_MENU : menu_state + 1;
     menu_draw();
 }
 
