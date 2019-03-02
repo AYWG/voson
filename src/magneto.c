@@ -2,8 +2,8 @@
 #define FWD_THRESH_ADC2 12000
 #define RVS_THRESH_ADC2 11000
 #define RVS_THRESH_ADC1 6000 //threshold value from adc1; required for rvs speed mapping
-#define FWD_MAX 8500         //max forward position adc value
-#define RVS_MAX 10100        //max reverse position adc value
+#define FWD_MAX 12100         //max forward position adc value
+#define RVS_MAX 3800          //max reverse position adc value
 
 void InitADC(void)
 {
@@ -71,6 +71,41 @@ float ADCavg(unsigned char pin)
     return (float) sum / avg;
 }
 
+float round(float f)
+{
+    return floorf(f + 0.5);
+}
+
+unsigned char get_byte(unsigned int adc)
+{
+    float slope;
+    // Ignore any spikes
+    if (adc > FWD_MAX)
+    {
+        adc = FWD_MAX;
+    }
+    if (adc < RVS_MAX)
+    {
+        adc = RVS_MAX;
+    }
+    slope = 1.0 * (255) / (FWD_MAX - RVS_MAX);
+    return round(slope * (adc - RVS_MAX));
+}
+
+float get_angle(void)
+{
+    float result;
+    unsigned int vcos = ADC_at_Pin(QFP32_MUX_P1_4);
+    unsigned int vsin = ADC_at_Pin(QFP32_MUX_P1_5);
+
+    // printf("vcos: %f, vsin: %f\n", (float) vcos, (float) vsin);
+    printf("byte: %u\n", get_byte(vsin));
+
+    result = atan2f( (float) vsin,  (float) vcos) / 2;
+    result = result * 180 / PI;
+    return result;
+}
+
 //outputs relative speed according to the 2 adc values read from the magnetoresistor
 int get_speed(void)
 {
@@ -78,8 +113,8 @@ int get_speed(void)
     float adc2 = ADCavg(QFP32_MUX_P1_5);
     int speed;
 
-    // printf("P1.4: %f    P1.5: %f\n", adc1, adc2);
-    // printf("adc1 - adc2: %f\n", adc1 - adc2);
+    printf("P1.4: %f    P1.5: %f\n", adc1, adc2);
+    printf("adc1 - adc2: %f\n", adc1 - adc2);
 
     if (adc2 > RVS_THRESH_ADC2 && adc2 > FWD_THRESH_ADC2 && adc1 < RVS_THRESH_ADC1) //within zero speed range
         speed = 0;
