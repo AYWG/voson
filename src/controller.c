@@ -241,7 +241,8 @@ void main(void)
 			deadman_event();
 
 			// printf("speed: %d\n", get_speed());
-			printf("angle %f\n", get_angle());
+			get_angle();
+			// printf("angle %f\n", get_angle());
 			// get_speed();
 			// printf("%d\n", get_speed());
 

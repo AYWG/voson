@@ -2,8 +2,8 @@
 #define FWD_THRESH_ADC2 12000
 #define RVS_THRESH_ADC2 11000
 #define RVS_THRESH_ADC1 6000 //threshold value from adc1; required for rvs speed mapping
-#define FWD_MAX 12100         //max forward position adc value
-#define RVS_MAX 3800          //max reverse position adc value
+#define FWD_MAX 12700         //max forward position adc value
+#define RVS_MAX 3700          //max reverse position adc value
 
 void InitADC(void)
 {
