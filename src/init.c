@@ -59,7 +59,7 @@ char _c51_external_startup (void)
 	//P0MDOUT |= 0b0100_0000; // Enable UART0 TX as push-pull output
 	XBR0     = 0x07; // Enable UART0 on P0.4(TX) and P0.5(RX)      and smb0 and spi0               
 	XBR1     = 0b0100_0000;
-	XBR2     = 0x40; // Enable crossbar and weak pull-ups
+	XBR2     = 0x41; // Enable crossbar and weak pull-ups
 	P0SKIP = 0b0000_1000; // Skip first pin and then use the last two for the SS
 	P1MDIN &= 0b_1100_0011; // ADC pins
 	P1SKIP |= 0b_0011_1000;
