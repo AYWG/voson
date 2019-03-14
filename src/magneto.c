@@ -4,6 +4,7 @@
 #define RVS_THRESH_ADC1 6000 //threshold value from adc1; required for rvs speed mapping
 #define FWD_MAX 12700         //max forward position adc value
 #define RVS_MAX 3700          //max reverse position adc value
+#define SPEED_MAX 40          // max 40 km/h
 
 void InitADC(void)
 {
@@ -106,34 +107,24 @@ float get_angle(void)
     return result;
 }
 
-//outputs relative speed according to the 2 adc values read from the magnetoresistor
-int get_speed(void)
+unsigned int get_speed(void)
 {
-    float adc1 = ADCavg(QFP32_MUX_P1_4);
-    float adc2 = ADCavg(QFP32_MUX_P1_5);
-    int speed;
+    // - from roughly 128 to 255 -> 0 to 40
+    // - from roughly 127 to 0 -> 0 to 40
+    unsigned char speed;
+    unsigned char magneto_data = get_byte(ADC_at_Pin(QFP32_MUX_P1_5));
+    float slope;
 
-    printf("P1.4: %f    P1.5: %f\n", adc1, adc2);
-    printf("adc1 - adc2: %f\n", adc1 - adc2);
-
-    if (adc2 > RVS_THRESH_ADC2 && adc2 > FWD_THRESH_ADC2 && adc1 < RVS_THRESH_ADC1) //within zero speed range
-        speed = 0;
-    else if (adc2 <= FWD_THRESH_ADC2)
-    { //map adc value from range to 0-100
-        speed = 100 - ((adc2 - FWD_MAX) / (FWD_THRESH_ADC2 - FWD_MAX) * 100);
-        if (speed > 100) //cap out at 100
-            speed = 100;
+    // Forward
+    printf("data: %u\n", magneto_data);
+    if (magneto_data > 128) {
+        slope = 1.0 * (SPEED_MAX) / (128);
+        speed = round(slope * (magneto_data - 128));
     }
-    else if (adc2 >= RVS_THRESH_ADC2)
-    { //map adc value from range to -100-0
-        speed = -((adc1 - RVS_THRESH_ADC1) / (RVS_MAX - RVS_THRESH_ADC1) * 100);
-        if (speed < -100) //cap out at -100
-            speed = -100;
-    }
-    else
-    {
-        speed = 0; //something went wrong
-        printf("speed calc fault!");
+    // Reverse
+    else {
+        slope = 1.0 * (-SPEED_MAX) / (128);
+        speed = round(slope * (magneto_data - 128));
     }
     return speed;
 }
