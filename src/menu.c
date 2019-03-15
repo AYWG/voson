@@ -15,6 +15,8 @@ void menu_draw(void)
     {
     case MAIN_MENU:
         // Draw everything
+        oled_enable_commands();
+        oled_write(0xAF);
         main_draw(FALSE);
         common_draw_menu_arrow(FALSE, menu_state);
         common_draw_menu_bar(FALSE);
@@ -29,6 +31,8 @@ void menu_draw(void)
 
     case OFF_MENU:
         // Erase everything
+        oled_enable_commands();
+        oled_write(0xAE);
         common_draw_menu_arrow(TRUE, menu_state - 1);
         common_draw_menu_bar(TRUE);
         common_draw_mode_bar(TRUE);
