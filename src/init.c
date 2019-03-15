@@ -47,10 +47,11 @@ char _c51_external_startup (void)
 	#endif
 	
 	SFRPAGE = 0x00;
-	P0MDOUT |= 0b1101_1101; // Enable UART0 TX as push-pull output
+	P0MDOUT |= 0b0001_1101; // Enable UART0 TX as push-pull output
 	P1MDOUT = 0b1000_0100;
 	P2MDOUT = 0b0100_0001;
-	PRTDRV = 0b0000_0100;
+
+	// PRTDRV = 0b0000_0100;
 	SFRPAGE = 0x20;
 	P3MDOUT = 0b0000_1111;
 	SFRPAGE = 0x00;
@@ -58,11 +59,11 @@ char _c51_external_startup (void)
 	
 	//P0MDOUT |= 0b0100_0000; // Enable UART0 TX as push-pull output
 	XBR0     = 0x07; // Enable UART0 on P0.4(TX) and P0.5(RX)      and smb0 and spi0               
-	XBR1     = 0b0100_0000;
+	XBR1     = 0b0000_0000;
 	XBR2     = 0x41; // Enable crossbar and weak pull-ups
 	P0SKIP = 0b0000_1000; // Skip first pin and then use the last two for the SS
-	P1MDIN &= 0b_1100_0011; // ADC pins
-	P1SKIP |= 0b_0011_1000;
+	P1MDIN |= 0b_1100_0000; // ADC pins
+	// P1SKIP |= 0b_0011_1000;
 
 	// Configure Uart 0
 	SCON0 = 0x10;
@@ -92,26 +93,28 @@ char _c51_external_startup (void)
 	SMB0CF = 0b1101_0000;
 	
 	// Configure UART1
-	
+
 	SFRPAGE = 0x20;
-	SMOD1 = 0x0C; 
+	SMOD1 = 0x0C;
 	SCON1 = 0x10;
-	SBCON1 =0x00;  
-	SBRL1 = 0x10000L-((72000000/BAUDRATE)/(12L*2L));
-	SCON1 |= 0x02;    
-	SBCON1 |= 0x40;   
-	SFRPAGE = 0x10; // Maybe change to 0x00;
-	
-	EA=1;				// Global Interrupts
-	EIE2 = 0b0000_0100; // Timer 4 Interrupts
-	LFO0CN = 0b1100_1100; // Enable the low frequency clock 
-	SFRPAGE = 0x10;
-	TMR4RLH= 0b1111_1101; // set the 16 bit timer high reload value
-	TMR4RLL= 0b0000_1111; // set the 16 bit timer low reload value
-	TMR4H= 0b1111_1101; // set the 16 bit timer high value
-	TMR4L= 0b0000_1111; // set the 16 bit timer low value
-	TMR4CN0 = 0b0000_0011; // Turn off timer for now. 
+	SBCON1 = 0x00;
+	SBRL1 = 65527L;
+	SCON1 |= 0x02;
+	SBCON1 |= 0x40;
 	SFRPAGE = 0x00;
+
+
+
+	// EA=1;				// Global Interrupts
+	// EIE2 = 0b0000_0100; // Timer 4 Interrupts
+	// LFO0CN = 0b1100_1100; // Enable the low frequency clock 
+	// SFRPAGE = 0x10;
+	// TMR4RLH= 0b1111_1101; // set the 16 bit timer high reload value
+	// TMR4RLL= 0b0000_1111; // set the 16 bit timer low reload value
+	// TMR4H= 0b1111_1101; // set the 16 bit timer high value
+	// TMR4L= 0b0000_1111; // set the 16 bit timer low value
+	// TMR4CN0 = 0b0000_0011; // Turn off timer for now. 
+	// SFRPAGE = 0x00;
 	
 	
 	// Configure ADC
