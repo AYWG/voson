@@ -135,7 +135,10 @@ void main_init(void)
 
 void main_update_speed(unsigned char new_speed)
 {
-    main_draw_speed(ERASE, current_speed);
-    current_speed = new_speed;
-    main_draw_speed(DRAW, new_speed);
+    // Only update UI if we need to.
+    if (new_speed != current_speed) {
+        main_draw_speed(ERASE, current_speed);
+        current_speed = new_speed;
+        main_draw_speed(DRAW, new_speed);
+    }
 }
