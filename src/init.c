@@ -78,7 +78,7 @@ char _c51_external_startup (void)
 	// Configure SPI0
 	SPI0CFG = 0b0100_0000; // not busy, master enable, first edge of clock, line in low idle
 	SPI0CN0 = 0b0000_0001; // 3_wire mode and enable spi
-	SPI0CKR =  (SYSCLK/(2*F_SCK_MAX))-1;; //48/(1*2)-1; // has to be between 0 and 255 
+	SPI0CKR = (SYSCLK/(2*F_SCK_MAX))-1;; //48/(1*2)-1; // has to be between 0 and 255 
 	
 	// Configure I2C
 	
@@ -98,7 +98,7 @@ char _c51_external_startup (void)
 	SMOD1 = 0x0C;
 	SCON1 = 0x10;
 	SBCON1 = 0x00;
-	SBRL1 = 65527L;
+	SBRL1 = 65510L;
 	SCON1 |= 0x02;
 	SBCON1 |= 0x40;
 	SFRPAGE = 0x00;

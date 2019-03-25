@@ -17,6 +17,7 @@
 #include "menu.c"
 #include "i2c.c"
 #include "magneto.c"
+#include "bt.c"
 #include "init.c"
 
 // address for FUXB = 0x46 and 0x45
@@ -37,33 +38,6 @@ void SendByteSPI()
 	Timer3us(5); 
 	OLED_SELECT = 1;
 	return;
-}
-
-void senddata(char c) 
-{
-    SFRPAGE = 0x20;
-	if (c == '\n') 
-	{
-		while (!(SCON1 & 0x02));
-		SCON1 &= ~0x02;
-		SBUF1 = '\r';
-	}
-	while (!(SCON1 & 0x02));
-	SCON1 &= ~0x02;
-	SBUF1 = c;
-	SFRPAGE = 0x00;
-}
-
-char receivedata(void)
-{
-	char c;
-    SFRPAGE = 0x20;
-	while (!(SCON1 & 0x01));
-	SCON1 &= ~0x01;
-	SCON1&=0b_0011_1111;
-	c = SBUF1;
-	SFRPAGE = 0x00;
-	return (c);
 }
 
 void low_power_sleep(){
@@ -190,6 +164,10 @@ void deadman_event(void)
 	if (menu_state == SETTINGS_MENU) {
 		settings_toggle();
 	}
+
+	if (menu_state == MAIN_MENU) {
+		senddata(get_byte(ADC_at_Pin(QFP32_MUX_P1_5)));
+	}
 }
 
 /////////////////////////////////
@@ -198,8 +176,6 @@ void deadman_event(void)
 
 void main(void)
 {
-	unsigned char speed = 0;
-	unsigned char i = 0;
 	// Clear all pin states and reset
 	STATUS1 = 1;
 	NOTIF = 0;
@@ -239,21 +215,10 @@ void main(void)
 
 		if (DEADMAN == 0) {
 			deadman_event();
-
-			// printf("speed: %d\n", get_speed());
-			get_angle();
-			// printf("angle %f\n", get_angle());
-			// get_speed();
-			// printf("%d\n", get_speed());
-
 		}
-		i++;
-		if (i % 10 == 0) {
-			speed++;
-			if (speed == 100) speed = 0;
-			if (menu_state == MAIN_MENU) {
-				main_update_speed(speed);
-			}
+
+		if (menu_state == MAIN_MENU) {
+			main_update_speed(get_speed());
 		}
 
 		// if (BOOT == 0){ btnpress(); } 					// Core code for home button functionality

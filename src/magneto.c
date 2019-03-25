@@ -2,9 +2,10 @@
 #define FWD_THRESH_ADC2 12000
 #define RVS_THRESH_ADC2 11000
 #define RVS_THRESH_ADC1 6000 //threshold value from adc1; required for rvs speed mapping
-#define FWD_MAX 12700         //max forward position adc value
-#define RVS_MAX 3700          //max reverse position adc value
+#define FWD_MAX 12730         //max forward position adc value
+#define RVS_MAX 3800          //max reverse position adc value
 #define SPEED_MAX 40          // max 40 km/h
+#define ERROR 20              // for the joystick's position
 
 void InitADC(void)
 {
@@ -77,9 +78,11 @@ float round(float f)
     return floorf(f + 0.5);
 }
 
+/* Get the current position of the joystick as a value b/w 0-255 (128 means stopped) */
 unsigned char get_byte(unsigned int adc)
 {
     float slope;
+    unsigned char byte;
     // Ignore any spikes
     if (adc > FWD_MAX)
     {
@@ -90,7 +93,11 @@ unsigned char get_byte(unsigned int adc)
         adc = RVS_MAX;
     }
     slope = 1.0 * (255) / (FWD_MAX - RVS_MAX);
-    return round(slope * (adc - RVS_MAX));
+    byte = round(slope * (adc - RVS_MAX));
+    if (byte < 128 + ERROR + ERROR && byte > 128 - ERROR) {
+        byte = 128;
+    }
+    return byte;
 }
 
 float get_angle(void)
@@ -99,7 +106,6 @@ float get_angle(void)
     unsigned int vcos = ADC_at_Pin(QFP32_MUX_P1_4);
     unsigned int vsin = ADC_at_Pin(QFP32_MUX_P1_5);
 
-    // printf("vcos: %f, vsin: %f\n", (float) vcos, (float) vsin);
     printf("byte: %u\n", get_byte(vsin));
 
     result = atan2f( (float) vsin,  (float) vcos) / 2;
@@ -113,18 +119,25 @@ unsigned int get_speed(void)
     // - from roughly 127 to 0 -> 0 to 40
     unsigned char speed;
     unsigned char magneto_data = get_byte(ADC_at_Pin(QFP32_MUX_P1_5));
+
     float slope;
 
     // Forward
+    printf("adc: %u\n", ADC_at_Pin(QFP32_MUX_P1_5));
     printf("data: %u\n", magneto_data);
-    if (magneto_data > 128) {
+    // Forward has slightly more error
+    if (magneto_data  > 128 + ERROR + ERROR) {
         slope = 1.0 * (SPEED_MAX) / (128);
         speed = round(slope * (magneto_data - 128));
     }
     // Reverse
-    else {
+    else if (magneto_data < 128 - ERROR) {
         slope = 1.0 * (-SPEED_MAX) / (128);
         speed = round(slope * (magneto_data - 128));
+    }
+    // Everything near the middle is just 0
+    else {
+        speed = 0;
     }
     return speed;
 }

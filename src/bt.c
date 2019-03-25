@@ -1,6 +1,6 @@
 /* Bluetooth stuff */
 
-void senddata(char c)
+void senddata(unsigned char c)
 {
     SFRPAGE = 0x20;
     if (c == '\n')

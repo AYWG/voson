@@ -1,14 +1,14 @@
 #ifndef _CONTROLLER_H
 #define _CONTROLLER_H
 
-#define SYSCLK 24500000L
+#define SYSCLK 72000000L
 #define BAUDRATE 115200L
 
 #define TH1_TH1__SHIFT 0x00 ///< Timer 1 High Byte
 #define TL1_TL1__SHIFT 0x00 ///< Timer 1 Low Byte
 #define TCON_TR0__RUN 0x10  ///< Start Timer 0 running.
 
-#define F_SCK_MAX 2000000L // Max SCK freq (Hz)
+#define F_SCK_MAX 12500000L // Max SCK freq (Hz)
 #define BLE_FREQ 112500L
 
 //button settings
