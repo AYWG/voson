@@ -83,6 +83,7 @@ unsigned char get_byte(unsigned int adc)
 {
     float slope;
     unsigned char byte;
+    // printf("adc: %u\n", adc);
     // Ignore any spikes
     if (adc > FWD_MAX)
     {
@@ -100,19 +101,6 @@ unsigned char get_byte(unsigned int adc)
     return byte;
 }
 
-float get_angle(void)
-{
-    float result;
-    unsigned int vcos = ADC_at_Pin(QFP32_MUX_P1_4);
-    unsigned int vsin = ADC_at_Pin(QFP32_MUX_P1_5);
-
-    printf("byte: %u\n", get_byte(vsin));
-
-    result = atan2f( (float) vsin,  (float) vcos) / 2;
-    result = result * 180 / PI;
-    return result;
-}
-
 unsigned int get_speed(void)
 {
     // - from roughly 128 to 255 -> 0 to 40
@@ -122,9 +110,6 @@ unsigned int get_speed(void)
 
     float slope;
 
-    // Forward
-    printf("adc: %u\n", ADC_at_Pin(QFP32_MUX_P1_5));
-    printf("data: %u\n", magneto_data);
     // Forward has slightly more error
     if (magneto_data  > 128 + ERROR + ERROR) {
         slope = 1.0 * (SPEED_MAX) / (128);
