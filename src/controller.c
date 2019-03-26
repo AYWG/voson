@@ -188,9 +188,9 @@ void main(void)
 	// Turn on LED to indicate that the controller is on
 	
 	// Vibrate motor to give feedback
-	NOTIF = 1;
-	waitms(20);
-	NOTIF = 0;
+	// NOTIF = 1;
+	// waitms(20);
+	// NOTIF = 0;
 	
 	// Turn on magnetoresistor sensor
 	magneto_enable();
@@ -203,7 +203,7 @@ void main(void)
 	menu_draw();
 
 	CHARGE_EN = 0;
-	printf("%f");
+	// printf("%f");
 
 	while(1)
 	{

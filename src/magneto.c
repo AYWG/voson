@@ -2,10 +2,10 @@
 #define FWD_THRESH_ADC2 12000
 #define RVS_THRESH_ADC2 11000
 #define RVS_THRESH_ADC1 6000 //threshold value from adc1; required for rvs speed mapping
-#define FWD_MAX 12730         //max forward position adc value
-#define RVS_MAX 3800          //max reverse position adc value
+#define FWD_MAX 12650        //max forward position adc value
+#define RVS_MAX 3880         //max reverse position adc value
 #define SPEED_MAX 40          // max 40 km/h
-#define ERROR 20              // for the joystick's position
+#define ERROR 35              // for the joystick's position
 
 void InitADC(void)
 {
@@ -83,7 +83,6 @@ unsigned char get_byte(unsigned int adc)
 {
     float slope;
     unsigned char byte;
-    // printf("adc: %u\n", adc);
     // Ignore any spikes
     if (adc > FWD_MAX)
     {
@@ -95,7 +94,7 @@ unsigned char get_byte(unsigned int adc)
     }
     slope = 1.0 * (255) / (FWD_MAX - RVS_MAX);
     byte = round(slope * (adc - RVS_MAX));
-    if (byte < 128 + ERROR + ERROR && byte > 128 - ERROR) {
+    if (byte <= 128 + ERROR && byte >= 128 - ERROR) {
         byte = 128;
     }
     return byte;
@@ -110,8 +109,8 @@ unsigned int get_speed(void)
 
     float slope;
 
-    // Forward has slightly more error
-    if (magneto_data  > 128 + ERROR + ERROR) {
+    // Forward
+    if (magneto_data > 128 + ERROR) {
         slope = 1.0 * (SPEED_MAX) / (128);
         speed = round(slope * (magneto_data - 128));
     }
